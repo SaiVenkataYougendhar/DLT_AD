@@ -47,3 +47,21 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Local ML outputs and uploaded training assets
+__pycache__/
+*.pyc
+dataset/Training/*
+dataset/Testing/*
+!dataset/Training/.gitkeep
+!dataset/Testing/.gitkeep
+models/*.keras
+models/*.h5
+models/*.json
+analytics/*.json
+
+.env
+.keras_cache/
+*.log
+.venv/
+dist/

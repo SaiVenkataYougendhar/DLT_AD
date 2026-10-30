@@ -1,6 +1,7 @@
-# [Project name]
+# Brain Tumor Classification Using Deep Learning
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+An educational MRI classification research prototype with real model/training
+integration, MongoDB-backed prediction history, and analytics.
 
 ## Run & Operate
 
@@ -22,23 +23,35 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/brain-tumor-classifier` — React/Vite application
+- `artifacts/api-server/src/routes` — API routes and validation
+- `lib/api-spec/openapi.yaml` — API source of truth
+- `train_model.py` and `backend/ml/predict.py` — real ML training/inference
+- `dataset/`, `models/`, and `analytics/` — dataset and generated model output locations
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Prediction outputs are unavailable until a trained Keras model exists; no fallback labels or confidence scores are generated.
+- MongoDB stores prediction metadata only, never uploaded image bytes or patient identifiers.
+- The managed Replit API workflow uses the shared TypeScript server for routing, while Python owns the TensorFlow training/inference pipeline.
+- OpenAPI is the contract for generated client hooks and server validation.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Users can inspect the research methodology, check model/database readiness,
+upload an MRI for real inference when trained assets are present, and review
+actual stored predictions, analytics, and evaluation metrics.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Never present this system as a medical diagnostic tool.
+- Never fabricate predictions, confidence, analytics, or model performance.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Run `pnpm --filter @workspace/api-spec run codegen` after OpenAPI changes.
+- Model assets are intentionally ignored by git and must be generated from a licensed dataset.
+- MongoDB is optional for startup but required for stored history and analytics.
 
 ## Pointers
 

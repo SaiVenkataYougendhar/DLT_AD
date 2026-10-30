@@ -1,0 +1,10 @@
+fastapi>=0.115,<1
+uvicorn[standard]>=0.34,<1
+tensorflow>=2.16,<3
+numpy>=1.26,<3
+pandas>=2.2,<3
+pillow>=10,<12
+scikit-learn>=1.5,<2
+pymongo>=4.10,<5
+python-multipart>=0.0.20,<1
+python-dotenv>=1.0,<2
