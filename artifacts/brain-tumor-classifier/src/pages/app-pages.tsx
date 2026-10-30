@@ -3,6 +3,7 @@ import {
   BrainThemeToggle,
   AnimatedOrganIcon,
   DiagnosticPreloader,
+  PreloaderVariant,
   ImageRotateScroller,
   Skiper54Carousel,
   ParallaxSection,
@@ -277,6 +278,7 @@ function RecentRows({
 // -------------------------------------------------------------
 export function LandingPage() {
   const [showPreloader, setShowPreloader] = useState<boolean>(true);
+  const [preloaderVariant, setPreloaderVariant] = useState<PreloaderVariant>("spasoje");
 
   const handlePreloaderComplete = () => {
     setShowPreloader(false);
@@ -286,7 +288,11 @@ export function LandingPage() {
     <div className="relative min-h-screen bg-background text-foreground transition-colors duration-200 overflow-x-hidden">
       {/* Skiper9 Diagnostic Preloader */}
       {showPreloader && (
-        <DiagnosticPreloader onComplete={handlePreloaderComplete} durationMs={2200} />
+        <DiagnosticPreloader
+          onComplete={handlePreloaderComplete}
+          durationMs={2400}
+          initialVariant={preloaderVariant}
+        />
       )}
 
       {/* Top Header Navigation */}
@@ -342,12 +348,39 @@ export function LandingPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setShowPreloader(true)}
+                  onClick={() => {
+                    setPreloaderVariant("spasoje");
+                    setShowPreloader(true);
+                  }}
                   className="metallic-pill inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono text-foreground/80 hover:text-blue-600 dark:hover:text-blue-400 transition cursor-pointer shadow-sm"
-                  title="Replay Skiper9 Diagnostic Boot Animation"
+                  title="Replay Spasoje.dev SVG Curved Wave Preloader"
                 >
                   <Activity size={12} className="text-blue-500 animate-pulse" />
-                  <span>Replay Diagnostic Boot Sequence</span>
+                  <span>Spasoje Preloader</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreloaderVariant("double-steps");
+                    setShowPreloader(true);
+                  }}
+                  className="metallic-pill inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono text-foreground/80 hover:text-cyan-600 dark:hover:text-cyan-400 transition cursor-pointer shadow-sm"
+                  title="Replay Double Steps Dual-Stream Preloader"
+                >
+                  <SlidersHorizontal size={12} className="text-cyan-500" />
+                  <span>Double Steps</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreloaderVariant("steps");
+                    setShowPreloader(true);
+                  }}
+                  className="metallic-pill inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono text-foreground/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition cursor-pointer shadow-sm"
+                  title="Replay 4-Stage Milestone Preloader"
+                >
+                  <CheckCircle2 size={12} className="text-indigo-500" />
+                  <span>Milestones</span>
                 </button>
               </div>
 

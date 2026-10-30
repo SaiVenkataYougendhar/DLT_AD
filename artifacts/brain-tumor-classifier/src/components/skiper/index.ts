@@ -9,6 +9,7 @@ export {
 export { Skiper60 } from "./side-scroll-nav";
 export type { TermItem } from "./side-scroll-nav";
 export { DiagnosticPreloader } from "./preloader";
+export type { PreloaderVariant } from "./preloader";
 export { ImageRotateScroller } from "./image-rotate-scroller";
 export { Skiper54Carousel } from "./carousel";
 export { ParallaxSection } from "./parallax-section";
