@@ -1,10 +1,11 @@
 
+import sys
 import subprocess
 import json
 from pathlib import Path
 
 def test_inference():
-    root = Path(r"d:\AD - 3\Brain-Tumor-Classifier\Brain-Tumor-Classifier\Brain-Tumor-Classifier")
+    root = Path(__file__).resolve().parent
     predict_script = root / "backend" / "ml" / "predict.py"
     model_path = root / "models" / "brain_tumor_model.keras"
     class_names_path = root / "models" / "class_names.json"
@@ -24,7 +25,7 @@ def test_inference():
             print(f"Skipping {expected_class}: {image_path} not found.")
             continue
             
-        cmd = ["python", str(predict_script), str(image_path), str(model_path), str(class_names_path)]
+        cmd = [sys.executable, str(predict_script), str(image_path), str(model_path), str(class_names_path)]
         result = subprocess.run(cmd, capture_output=True, text=True)
         
         if result.returncode != 0:

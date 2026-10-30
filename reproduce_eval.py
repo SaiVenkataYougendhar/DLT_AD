@@ -15,7 +15,7 @@ def preprocess_dataset(image, label):
     return preprocess_input(image), label
 
 def evaluate():
-    root = Path(r"d:\AD - 3\Brain-Tumor-Classifier\Brain-Tumor-Classifier\Brain-Tumor-Classifier")
+    root = Path(__file__).resolve().parent
     model_path = root / "models" / "brain_tumor_model.keras"
     class_names_path = root / "models" / "class_names.json"
     testing_dir = root / "dataset" / "Testing"
