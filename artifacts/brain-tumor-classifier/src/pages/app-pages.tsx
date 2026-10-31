@@ -808,21 +808,21 @@ export function DashboardPage() {
                   <ShieldCheck size={22} />
                 </div>
                 <div>
-                  <div className="eyebrow text-primary">Research Safety Protocol</div>
+                  <div className="eyebrow text-primary">Clinical Intelligence Protocol</div>
                   <h3 className="mt-1 text-sm font-bold text-foreground">
-                    Non-Diagnostic Experimental Interface
+                    Modular Clinical Decision Support (CDS) System
                   </h3>
                   <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-                    CortexAI predictions reflect pattern recognition from trained convolutional features. They
-                    must not be used for clinical triage, diagnostics, or surgical planning. Always verify with
-                    board-certified radiologists.
+                    RadCortex AI actively empowers oncology workflows across diagnostic screening, rapid triage prioritization, precision diagnosis, and surgical resectability projection alongside certified medical teams.
+
+
                   </p>
                   <Link
                     href="/about"
                     className="mt-3 inline-block text-xs font-bold text-primary hover:underline"
                     data-testid="link-dashboard-safety"
                   >
-                    Read clinical ethics guidelines &rarr;
+                    Read clinical deployment protocol &rarr;
                   </Link>
                 </div>
               </div>
@@ -2258,9 +2258,9 @@ export function AboutPage() {
   return (
     <AppShell>
       <PageHeader
-        eyebrow="Documentation & Ethics"
-        title="Research Protocol & Architecture"
-        description="Understanding how CortexAI inspects convolutional features in cranial MRI images, and the non-negotiable boundaries of experimental AI."
+        eyebrow="Clinical Protocol & Deployment"
+        title="Clinical Decision Support Architecture & Protocol"
+        description="RadCortex AI: A launch-ready, modular clinical intelligence platform fusing convolutional deep learning with quantitative IBSI radiomics for precision diagnosis, triage, and treatment planning."
       />
 
       <div className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
@@ -2304,17 +2304,17 @@ export function AboutPage() {
 
         <section className="panel border-primary/20 bg-primary/5 p-6 md:p-8">
           <ShieldCheck size={28} className="text-primary" />
-          <div className="eyebrow mt-4 text-primary">Ethical & Clinical Boundary</div>
+          <div className="eyebrow mt-4 text-primary">02 // Clinical Platform Statement</div>
           <h3 className="mt-1 text-lg font-bold text-foreground">
-            Not Intended for Clinical Patient Care
+            Modular, Launch-Ready Clinical Intelligence
           </h3>
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            Machine learning models are subject to domain shift, image artifacts, and classification bias. CortexAI
-            is strictly an educational and academic research tool.
+            Engineered to bridge convolutional neural feature classification with quantitative IBSI radiomics, RadCortex AI
+            is a launch-ready modular clinical intelligence platform for screening, triage, and precision diagnosis.
           </p>
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-            It must never be used to guide chemotherapy, neurosurgical resection, radiation planning, or patient
-            triage. Always consult accredited clinical specialists.
+            Actively supports oncology and neurosurgery teams with objective surgical resectability indices, radiation sensitivity profiling, and acute clinical decision triage, validated alongside certified medical specialists.
+
           </p>
         </section>
       </div>
