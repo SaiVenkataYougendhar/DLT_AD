@@ -19,11 +19,16 @@ def test_inference():
     ]
 
     print("--- Inference Verification ---")
+    samples_dir = root / "artifacts" / "brain-tumor-classifier" / "public" / "samples"
     for expected_class, filename in test_cases:
         image_path = testing_dir / expected_class / filename
         if not image_path.exists():
-            print(f"Skipping {expected_class}: {image_path} not found.")
-            continue
+            sample_fallback = samples_dir / f"sample-{expected_class}.jpg"
+            if sample_fallback.exists():
+                image_path = sample_fallback
+            else:
+                print(f"Skipping {expected_class}: {image_path} not found.")
+                continue
             
         cmd = [sys.executable, str(predict_script), str(image_path), str(model_path), str(class_names_path)]
         result = subprocess.run(cmd, capture_output=True, text=True)
