@@ -41,6 +41,11 @@ from backend.ml.neural_networking import (
     PEER_REVIEWED_SOURCES,
     match_literature_for_scan,
     compute_neural_network_state,
+    init_neural_learning_db,
+    record_neural_learning_event,
+    get_neural_learning_store,
+    reset_neural_learning_store,
+    check_sources_connectivity,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -106,6 +111,10 @@ def init_db() -> None:
                 pass
     conn.commit()
     conn.close()
+    try:
+        init_neural_learning_db(SQLITE_PATH)
+    except Exception as e:
+        print("Error initializing neural learning db:", e)
 
 
 init_db()
@@ -393,9 +402,19 @@ async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
             lit_matches,
         )
         _latest_neural_state = neural_state
+        learning_event = record_neural_learning_event(
+            scan_name=file.filename or "uploaded-mri.jpg",
+            predicted_class=result["predicted_class"],
+            confidence=result["confidence"],
+            radiomics=result["radiomics"],
+            neural_state=neural_state,
+            literature_matches=lit_matches,
+            db_path=SQLITE_PATH,
+        )
         prediction["neural_networking"] = {
             "literature_matches": lit_matches,
             "soft_voting": neural_state["soft_voting"],
+            "learning_event": learning_event,
         }
     except Exception as e:
         print("Neural networking calculation error:", e)
@@ -611,6 +630,25 @@ def get_neural_knowledge_base() -> dict[str, Any]:
     }
 
 
+@app.get("/api/neural-network/learning-store")
+def get_learning_store(limit: int = 50) -> dict[str, Any]:
+    return get_neural_learning_store(SQLITE_PATH, limit=limit)
+
+
+@app.post("/api/neural-network/learning-store/reset")
+def reset_learning_store() -> dict[str, Any]:
+    return reset_neural_learning_store(SQLITE_PATH)
+
+
+@app.get("/api/neural-network/sources/connectivity")
+def get_sources_connectivity() -> dict[str, Any]:
+    return {
+        "status": "ok",
+        "total_sources": len(PEER_REVIEWED_SOURCES),
+        "sources": check_sources_connectivity(),
+    }
+
+
 @app.get("/api/neural-network/telemetry")
 def get_neural_telemetry() -> dict[str, Any]:
     global _latest_neural_state
@@ -655,9 +693,11 @@ def get_neural_telemetry() -> dict[str, Any]:
 async def analyze_neural_network(file: UploadFile = File(...)) -> dict[str, Any]:
     res = await predict(file)
     global _latest_neural_state
+    learning_event = res.get("neural_networking", {}).get("learning_event")
     return {
         "prediction": res,
         "neural_state": _latest_neural_state,
+        "learning_event": learning_event,
         "developer_telemetry": _latest_neural_state.get("audit_telemetry", []) if _latest_neural_state else [],
     }
 
