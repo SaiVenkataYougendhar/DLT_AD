@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RadCortex AI - System & Working Architecture</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #070b12;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding: 36px 44px;
+    width: 1800px;
+    height: 1250px;
+    overflow: hidden;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.4);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .title-group h1 {
+    font-size: 27px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+    font-family: Georgia, serif;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .title-group h1 .gold-pill {
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    color: #070b12;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: -apple-system, sans-serif;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .title-group p {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  .meta-badges {
+    display: flex;
+    gap: 10px;
+  }
+  .badge {
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-family: ui-monospace, monospace;
+    font-weight: 600;
+  }
+  .badge.gold { border-color: rgba(212, 175, 55, 0.4); color: #f59e0b; }
+  .badge.cyan { border-color: rgba(6, 182, 212, 0.4); color: #06b6d4; }
+  .badge.green { border-color: rgba(16, 185, 129, 0.4); color: #10b981; }
+
+  /* 5-TIER ARCHITECTURE STACK */
+  .architecture-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 1080px;
+    justify-content: space-between;
+  }
+
+  .tier-card {
+    background: #0f172a;
+    border: 1.5px solid rgba(148, 163, 184, 0.2);
+    border-radius: 14px;
+    padding: 16px 20px;
+    position: relative;
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
+  }
+  .tier-card.tier-1 {
+    border-color: rgba(6, 182, 212, 0.5);
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.08) 0%, #0f172a 35%, #0f172a 100%);
+  }
+  .tier-card.tier-2 {
+    border-color: rgba(99, 102, 241, 0.5);
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.08) 0%, #0f172a 35%, #0f172a 100%);
+  }
+  .tier-card.tier-3 {
+    border-color: rgba(212, 175, 55, 0.6);
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, #0f172a 35%, #0f172a 100%);
+  }
+  .tier-card.tier-4 {
+    border-color: rgba(168, 85, 247, 0.5);
+    background: linear-gradient(90deg, rgba(168, 85, 247, 0.08) 0%, #0f172a 35%, #0f172a 100%);
+  }
+  .tier-card.tier-5 {
+    border-color: rgba(16, 185, 129, 0.5);
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.08) 0%, #0f172a 35%, #0f172a 100%);
+  }
+
+  .tier-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .tier-label-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tier-badge {
+    font-size: 10px;
+    font-family: ui-monospace, monospace;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .tier-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: Georgia, serif;
+    letter-spacing: -0.2px;
+  }
+  .tier-subtext {
+    font-size: 11px;
+    color: #94a3b8;
+    font-family: ui-monospace, monospace;
+  }
+
+  /* Submodule Grid within each Tier */
+  .module-grid {
+    display: grid;
+    gap: 12px;
+  }
+  .grid-5 { grid-template-columns: repeat(5, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .submodule {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .submodule.highlight-gold {
+    border-color: rgba(212, 175, 55, 0.4);
+    background: rgba(212, 175, 55, 0.04);
+  }
+  .submodule.highlight-cyan {
+    border-color: rgba(6, 182, 212, 0.4);
+    background: rgba(6, 182, 212, 0.04);
+  }
+  .submodule.highlight-purple {
+    border-color: rgba(168, 85, 247, 0.4);
+    background: rgba(168, 85, 247, 0.04);
+  }
+
+  .submodule-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .submodule-badge {
+    font-size: 8.5px;
+    font-family: ui-monospace, monospace;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .submodule-desc {
+    font-size: 11px;
+    color: #94a3b8;
+    line-height: 1.4;
+  }
+  .submodule-meta {
+    margin-top: 8px;
+    font-size: 9.5px;
+    font-family: ui-monospace, monospace;
+    color: #cbd5e1;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 6px;
+  }
+
+  /* Connector Strip between Tiers */
+  .inter-tier-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    font-size: 10px;
+    font-family: ui-monospace, monospace;
+    color: #64748b;
+    margin: -6px 0;
+  }
+  .bar-line {
+    height: 1px;
+    background: rgba(148, 163, 184, 0.2);
+    flex: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title-group">
+    <h1>
+      <span>RAD-CORTEX AI // FULL-STACK WORKING ARCHITECTURE</span>
+      <span class="gold-pill">SYSTEM SCHEMATIC</span>
+    </h1>
+    <p>Comprehensive 5-Tier Component Stack: Client SPA → FastAPI Gateway → Neural/Radiomics Core → Omni-AI Mesh → Knowledge/Persistence</p>
+  </div>
+  <div class="meta-badges">
+    <div class="badge gold">REACT 19 + FASTAPI</div>
+    <div class="badge cyan">EFFICIENTNET-B0 + IBSI</div>
+    <div class="badge green">HTTP/2 + REST API</div>
+  </div>
+</div>
+
+<div class="architecture-stack">
+
+  <!-- TIER 1: FRONTEND PRESENTATION LAYER -->
+  <div class="tier-card tier-1">
+    <div class="tier-header">
+      <div class="tier-label-group">
+        <span class="tier-badge" style="background:rgba(6,182,212,0.2);color:#06b6d4;border:1px solid #06b6d4;">TIER 1</span>
+        <span class="tier-title">Client Presentation Layer (Vite 7 + React 19 SPA)</span>
+      </div>
+      <span class="tier-subtext">Port: 5173 · Tailwind CSS · English Heritage Theme (Oxford Blue / Westminster Gold)</span>
+    </div>
+    <div class="module-grid grid-5">
+      <div class="submodule highlight-cyan">
+        <div class="submodule-title">
+          <span>Studio Classifier HUD</span>
+          <span class="submodule-badge" style="color:#06b6d4;">CORE UI</span>
+        </div>
+        <div class="submodule-desc">Dynamic Viewport, calibrated Reticle [X, Y], wheel aperture scaling (14-100px), and zoom matrix.</div>
+        <div class="submodule-meta">
+          <span>PointerCapture API</span>
+          <span style="color:#06b6d4;">60 FPS Active</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Radiological Controls</span>
+          <span class="submodule-badge">WINDOWING</span>
+        </div>
+        <div class="submodule-desc">GPU-accelerated brightness (50-160%), contrast, radiological inversion, and Saliency overlay slider.</div>
+        <div class="submodule-meta">
+          <span>CSS Filter Shaders</span>
+          <span>Zero-Latency</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Multi-Organ Radiomics</span>
+          <span class="submodule-badge" style="color:#f59e0b;">MULTI-MODAL</span>
+        </div>
+        <div class="submodule-desc">Interactive explorer for Brain, Lung, Liver, Bone, and Mammary scans with 15+ quantitative metrics.</div>
+        <div class="submodule-meta">
+          <span>5 Organ Systems</span>
+          <span style="color:#f59e0b;">IBSI Benchmark</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Omni-AI Studio Deck</span>
+          <span class="submodule-badge" style="color:#a855f7;">FRONTIER</span>
+        </div>
+        <div class="submodule-desc">Multi-engine second opinion console with voice audio player, 3D video previews, and DICOM-SR downloads.</div>
+        <div class="submodule-meta">
+          <span>5 Unified Models</span>
+          <span style="color:#a855f7;">Multi-Modal</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Neural Engine Console</span>
+          <span class="submodule-badge" style="color:#10b981;">DEV VIEW</span>
+        </div>
+        <div class="submodule-desc">Real-time background literature harvesting telemetry, dual CNN+DNN tensor routing, and memory audit.</div>
+        <div class="submodule-meta">
+          <span>/backend-neural</span>
+          <span style="color:#10b981;">Live Synced</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inter-tier-bar">
+    <div class="bar-line"></div>
+    <span>REST JSON API / MULTIPART SCAN STREAMING (PORT 8001)</span>
+    <div class="bar-line"></div>
+  </div>
+
+  <!-- TIER 2: API GATEWAY & APPLICATION SERVER -->
+  <div class="tier-card tier-2">
+    <div class="tier-header">
+      <div class="tier-label-group">
+        <span class="tier-badge" style="background:rgba(99,102,241,0.2);color:#818cf8;border:1px solid #818cf8;">TIER 2</span>
+        <span class="tier-title">API Gateway & Async Application Server (FastAPI + Uvicorn)</span>
+      </div>
+      <span class="tier-subtext">Backend Daemon: main.py · Pydantic Validation · CORS Enabled · Uncapped Payloads</span>
+    </div>
+    <div class="module-grid grid-4">
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>/api/predict Route</span>
+          <span class="submodule-badge" style="color:#818cf8;">POST STREAM</span>
+        </div>
+        <div class="submodule-desc">Accepts uncapped binary scan files (DICOM, NIfTI, TIFF, JPG). Pipes raw buffer directly into memory decoders.</div>
+        <div class="submodule-meta">
+          <span>Multipart Handler</span>
+          <span style="color:#818cf8;">No File Size Cap</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>/api/model/status Route</span>
+          <span class="submodule-badge">HEALTHCHECK</span>
+        </div>
+        <div class="submodule-desc">Returns model weight initialization status, GPU/CPU acceleration state, and active tensor precision.</div>
+        <div class="submodule-meta">
+          <span>Health & Weights</span>
+          <span style="color:#10b981;">Status: Trained</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>/api/omni-ai Orchestrator</span>
+          <span class="submodule-badge" style="color:#a855f7;">ASYNC MESH</span>
+        </div>
+        <div class="submodule-desc">Asynchronously dispatches second opinion queries across DeepMind genomics, Astra 6 audio, and Claude Code.</div>
+        <div class="submodule-meta">
+          <span>asyncio.gather()</span>
+          <span style="color:#a855f7;">Parallel Exec</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>/api/neural-learning</span>
+          <span class="submodule-badge" style="color:#f59e0b;">HARVESTER</span>
+        </div>
+        <div class="submodule-desc">Serves persistent memory of scraped journals (AJNR, RSNA, TCIA, Springer) and live diagnostic cross-citations.</div>
+        <div class="submodule-meta">
+          <span>File/DB Backend</span>
+          <span style="color:#f59e0b;">Realtime Memory</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inter-tier-bar">
+    <div class="bar-line"></div>
+    <span>TENSOR MEMORY BUFFERS & QUANTITATIVE FEATURE PIPELINES</span>
+    <div class="bar-line"></div>
+  </div>
+
+  <!-- TIER 3: NEURAL & RADIOMICS COMPUTE ENGINE -->
+  <div class="tier-card tier-3">
+    <div class="tier-header">
+      <div class="tier-label-group">
+        <span class="tier-badge" style="background:rgba(212,175,55,0.25);color:#d4af37;border:1px solid #d4af37;">TIER 3</span>
+        <span class="tier-title">Core Neural Inference & IBSI Radiomics Compute Engine</span>
+      </div>
+      <span class="tier-subtext">TensorFlow 2.21 / Keras 3 · EfficientNet-B0 · NumPy · SciPy · OpenCV</span>
+    </div>
+    <div class="module-grid grid-4">
+      <div class="submodule highlight-gold">
+        <div class="submodule-title">
+          <span>EfficientNet-B0 Backbone</span>
+          <span class="submodule-badge" style="color:#f59e0b;">CNN CORE</span>
+        </div>
+        <div class="submodule-desc">16 MBConv blocks with compound scaling (depth, width, resolution). Generates 1280-dim feature embedding.</div>
+        <div class="submodule-meta">
+          <span>Input: (1, 224, 224, 3)</span>
+          <span style="color:#f59e0b;">Latency: ~180ms</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Deep Neural Network Head</span>
+          <span class="submodule-badge">DNN CLASSIFIER</span>
+        </div>
+        <div class="submodule-desc">GlobalAvgPool2D → Dense(128, ReLU) → Dropout(0.3) → Dense(4, Softmax). Calibrated multiclass probabilities.</div>
+        <div class="submodule-meta">
+          <span>Classes: 4 Categorical</span>
+          <span style="color:#06b6d4;">Softmax Output</span>
+        </div>
+      </div>
+
+      <div class="submodule highlight-gold">
+        <div class="submodule-title">
+          <span>IBSI Radiomics Extractor</span>
+          <span class="submodule-badge" style="color:#f59e0b;">BIOMARKERS</span>
+        </div>
+        <div class="submodule-desc">Calculates 15+ quantitative biomarkers: Sobel edge gradient, GLCM texture, skewness, kurtosis, and GTR index.</div>
+        <div class="submodule-meta">
+          <span>Standard: IBSI v2</span>
+          <span style="color:#f59e0b;">Sub-Visual Traits</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Grad-CAM Saliency Engine</span>
+          <span class="submodule-badge">EXPLAINABLE AI</span>
+        </div>
+        <div class="submodule-desc">Computes gradients of predicted class score with respect to final conv layer feature maps. Outputs heatmaps.</div>
+        <div class="submodule-meta">
+          <span>Spatial Heatmap</span>
+          <span style="color:#ef4444;">ROI Localization</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inter-tier-bar">
+    <div class="bar-line"></div>
+    <span>MULTI-ENGINE ASYNCHRONOUS ORCHESTRATION LAYER</span>
+    <div class="bar-line"></div>
+  </div>
+
+  <!-- TIER 4: FRONTIER MULTI-ENGINE AI MESH (OMNI-AI) -->
+  <div class="tier-card tier-4">
+    <div class="tier-header">
+      <div class="tier-label-group">
+        <span class="tier-badge" style="background:rgba(168,85,247,0.2);color:#c084fc;border:1px solid #c084fc;">TIER 4</span>
+        <span class="tier-title">Frontier Multi-Engine AI Mesh (Omni-AI Studio)</span>
+      </div>
+      <span class="tier-subtext">5 Synergistic Frontier Engines · Real-time Multi-Modal Second Opinions</span>
+    </div>
+    <div class="module-grid grid-4">
+      <div class="submodule highlight-purple">
+        <div class="submodule-title">
+          <span>Google DeepMind</span>
+          <span class="submodule-badge" style="color:#c084fc;">GENOMICS</span>
+        </div>
+        <div class="submodule-desc">Predicts molecular phenotypes: IDH1/2 mutation likelihood, MGMT promoter methylation, and 1p/19q codeletion.</div>
+        <div class="submodule-meta">
+          <span>AlphaFold Radiogenomics</span>
+          <span style="color:#c084fc;">Subtype Triage</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>ChatGPT Astra 6</span>
+          <span class="submodule-badge">AUDIO / VOICE</span>
+        </div>
+        <div class="submodule-desc">Real-time synthesized voice dictation explaining differential diagnoses, radiological windowing, and surgical cautions.</div>
+        <div class="submodule-meta">
+          <span>Text-to-Speech Engine</span>
+          <span style="color:#06b6d4;">Clinical Voice</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Claude Code Engine</span>
+          <span class="submodule-badge">DICOM-SR AUDIT</span>
+        </div>
+        <div class="submodule-desc">Generates standards-compliant DICOM Structured Reports (DICOM-SR), ICD-11 coding, and automated clinical documentation.</div>
+        <div class="submodule-meta">
+          <span>Structured Reporting</span>
+          <span style="color:#10b981;">ICD-11 / SNOMED</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Canva & Huggsfield</span>
+          <span class="submodule-badge">3D & INFOGRAPHICS</span>
+        </div>
+        <div class="submodule-desc">Renders patient-facing visual infographics and 3D volumetric tumor reconstruction video previews.</div>
+        <div class="submodule-meta">
+          <span>Generative 3D Video</span>
+          <span style="color:#f59e0b;">Patient Briefing</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inter-tier-bar">
+    <div class="bar-line"></div>
+    <span>PERSISTENCE, CACHE & PEER-REVIEWED MEDICAL KNOWLEDGE GRAPH</span>
+    <div class="bar-line"></div>
+  </div>
+
+  <!-- TIER 5: PERSISTENCE & KNOWLEDGE HARVESTING -->
+  <div class="tier-card tier-5">
+    <div class="tier-header">
+      <div class="tier-label-group">
+        <span class="tier-badge" style="background:rgba(16,185,129,0.2);color:#10b981;border:1px solid #10b981;">TIER 5</span>
+        <span class="tier-title">Knowledge, Web Harvesting & Persistence Layer</span>
+      </div>
+      <span class="tier-subtext">MongoDB / JSON Store · Background Scraper · Springer Nature & AJNR Knowledge Base</span>
+    </div>
+    <div class="module-grid grid-4">
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Scan Archive Store</span>
+          <span class="submodule-badge" style="color:#10b981;">PERSISTENCE</span>
+        </div>
+        <div class="submodule-desc">Stores complete inference records: predictions, confidence scores, execution timestamp, and patient scan IDs.</div>
+        <div class="submodule-meta">
+          <span>predictions.json / Mongo</span>
+          <span style="color:#10b981;">Encrypted</span>
+        </div>
+      </div>
+
+      <div class="submodule highlight-gold">
+        <div class="submodule-title">
+          <span>Neural Memory Store</span>
+          <span class="submodule-badge" style="color:#f59e0b;">LEARNING MEMORY</span>
+        </div>
+        <div class="submodule-desc">Dynamic state file tracking learned insights, literature citations, and real-time radiomics benchmarks.</div>
+        <div class="submodule-meta">
+          <span>neural_learning_memory.json</span>
+          <span style="color:#f59e0b;">Realtime State</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Literature Knowledge Graph</span>
+          <span class="submodule-badge">PEER-REVIEWED</span>
+        </div>
+        <div class="submodule-desc">Direct citations from Springer Nature, European Radiology, and RSNA for dural tail signs and glioma margins.</div>
+        <div class="submodule-meta">
+          <span>Springer / AJNR Portal</span>
+          <span style="color:#06b6d4;">Validated</span>
+        </div>
+      </div>
+
+      <div class="submodule">
+        <div class="submodule-title">
+          <span>Clinical Scheduler Engine</span>
+          <span class="submodule-badge">AUTOMATION</span>
+        </div>
+        <div class="submodule-desc">Generates medication protocols (e.g. Mannitol, Dexamethasone), neurosurgical consults, and 72-hour alarms.</div>
+        <div class="submodule-meta">
+          <span>Care Schedule</span>
+          <span style="color:#ef4444;">Emergency Alarms</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

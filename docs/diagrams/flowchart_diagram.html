@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RadCortex AI - Clinical Diagnostic Flowchart</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #090d16;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding: 36px 48px;
+    width: 1800px;
+    height: 1250px;
+    overflow: hidden;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.35);
+    padding-bottom: 18px;
+    margin-bottom: 26px;
+  }
+  .title-group h1 {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+    font-family: Georgia, serif;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .title-group h1 .gold-pill {
+    background: linear-gradient(135deg, #d4af37, #aa8010);
+    color: #090d16;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: -apple-system, sans-serif;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .title-group p {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 4px;
+    font-mono: monospace;
+  }
+  .meta-badges {
+    display: flex;
+    gap: 10px;
+  }
+  .badge {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-family: ui-monospace, monospace;
+    font-weight: 600;
+    color: #cbd5e1;
+  }
+  .badge.gold { border-color: rgba(212, 175, 55, 0.4); color: #f59e0b; }
+  .badge.cyan { border-color: rgba(6, 182, 212, 0.4); color: #06b6d4; }
+  .badge.green { border-color: rgba(16, 185, 129, 0.4); color: #10b981; }
+
+  /* Grid Layout for Flowchart */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: 260px 40px 320px 40px 340px 40px 320px 40px 280px;
+    align-items: center;
+    height: 1050px;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    justify-content: space-around;
+  }
+
+  .arrow-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #64748b;
+  }
+  .arrow-svg {
+    width: 32px;
+    height: 32px;
+    stroke: #d4af37;
+    stroke-width: 2.5;
+    fill: none;
+  }
+
+  /* Node Cards */
+  .node-card {
+    background: #0f172a;
+    border: 1.5px solid rgba(148, 163, 184, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  }
+  .node-card.gold-border {
+    border-color: rgba(212, 175, 55, 0.6);
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.08) 0%, #0f172a 100%);
+  }
+  .node-card.cyan-border {
+    border-color: rgba(6, 182, 212, 0.6);
+    background: linear-gradient(180deg, rgba(6, 182, 212, 0.08) 0%, #0f172a 100%);
+  }
+  .node-card.green-border {
+    border-color: rgba(16, 185, 129, 0.6);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, #0f172a 100%);
+  }
+  .node-card.purple-border {
+    border-color: rgba(168, 85, 247, 0.6);
+    background: linear-gradient(180deg, rgba(168, 85, 247, 0.08) 0%, #0f172a 100%);
+  }
+  .node-card.red-border {
+    border-color: rgba(239, 68, 68, 0.6);
+    background: linear-gradient(180deg, rgba(239, 68, 68, 0.08) 0%, #0f172a 100%);
+  }
+
+  .node-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .node-tag {
+    font-size: 9.5px;
+    font-family: ui-monospace, monospace;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .node-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 6px;
+    font-family: Georgia, serif;
+  }
+  .node-body {
+    font-size: 11.5px;
+    color: #94a3b8;
+    line-height: 1.45;
+  }
+  .node-meta {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-family: ui-monospace, monospace;
+    color: #cbd5e1;
+  }
+
+  /* Decision Diamond Card */
+  .diamond-card {
+    background: #1e1b4b;
+    border: 2px solid #a855f7;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.25);
+  }
+  .diamond-card .decision-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #f3e8ff;
+    font-family: ui-monospace, monospace;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .diamond-card .decision-desc {
+    font-size: 11px;
+    color: #c084fc;
+  }
+
+  /* Connector Line */
+  .vertical-connector {
+    width: 2px;
+    background: rgba(148, 163, 184, 0.25);
+    height: 18px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title-group">
+    <h1>
+      <span>RAD-CORTEX AI // CLINICAL DIAGNOSTIC FLOWCHART</span>
+      <span class="gold-pill">END-TO-END SPEC</span>
+    </h1>
+    <p>Comprehensive Diagnostic Workflow: Scan Ingestion → Convolutional Inference → IBSI Radiomics → Multi-Engine Triage</p>
+  </div>
+  <div class="meta-badges">
+    <div class="badge gold">IBSI-COMPLIANT</div>
+    <div class="badge cyan">EFFICIENTNET-B0 + DUAL DNN</div>
+    <div class="badge green">ZERO SIZE LIMITS</div>
+  </div>
+</div>
+
+<div class="flow-grid">
+  <!-- STAGE 1: INGESTION -->
+  <div class="column">
+    <div class="node-card gold-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#f59e0b;">STEP 1.1</span>
+        <span style="font-size:10px;color:#f59e0b;font-weight:bold;">INPUT</span>
+      </div>
+      <div class="node-title">Patient Scan Ingestion</div>
+      <div class="node-body">
+        Accepts any file size or resolution across cranial & multi-organ imaging.
+        Formats: DICOM (.dcm), NIfTI (.nii), TIFF, PNG, JPEG.
+      </div>
+      <div class="node-meta">
+        <span>Protocol: Multipart Upload</span>
+        <span style="color:#f59e0b;">Limit: Uncapped</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card">
+      <div class="node-header">
+        <span class="node-tag" style="color:#38bdf8;">STEP 1.2</span>
+        <span style="font-size:10px;color:#38bdf8;font-weight:bold;">PARSING</span>
+      </div>
+      <div class="node-title">DICOM / Matrix Parser</div>
+      <div class="node-body">
+        Extracts modality tags (Axial T1-CE, T2-FLAIR), patient metadata, and pixel array buffers via PIL / pydicom decoders.
+      </div>
+      <div class="node-meta">
+        <span>Resolution: Dynamic</span>
+        <span style="color:#38bdf8;">Zero Clipping</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card green-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#10b981;">STEP 1.3</span>
+        <span style="font-size:10px;color:#10b981;font-weight:bold;">VERIFY</span>
+      </div>
+      <div class="node-title">Sanity & Dimension Check</div>
+      <div class="node-body">
+        Verifies non-corrupt header, 2D/3D matrix bounds, and luminance levels. Rejects corrupted files with clinical error code.
+      </div>
+      <div class="node-meta">
+        <span>Validation: Strict</span>
+        <span style="color:#10b981;">Pass: 100%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARROW 1 -->
+  <div class="arrow-col">
+    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <span style="font-size:9px;font-family:monospace;margin-top:4px;color:#d4af37;">RAW TENSOR</span>
+  </div>
+
+  <!-- STAGE 2: PREPROCESSING -->
+  <div class="column">
+    <div class="node-card cyan-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#06b6d4;">STEP 2.1</span>
+        <span style="font-size:10px;color:#06b6d4;font-weight:bold;">NORMALIZATION</span>
+      </div>
+      <div class="node-title">Intensity & Contrast Norm</div>
+      <div class="node-body">
+        Hounsfield Unit (HU) / Z-score normalization: scales dynamic range to [0.0, 1.0], preserving sub-visual tumor edge gradients.
+      </div>
+      <div class="node-meta">
+        <span>Dynamic Range: 8-16 bit</span>
+        <span style="color:#06b6d4;">Luminance Clamped</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card gold-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#f59e0b;">STEP 2.2</span>
+        <span style="font-size:10px;color:#f59e0b;font-weight:bold;">DUAL PIPELINE</span>
+      </div>
+      <div class="node-title">Dual Branch Dispatch</div>
+      <div class="node-body">
+        Splits workflow into:
+        <br><b>Branch A:</b> 224x224 RGB Tensor for Deep CNN.
+        <br><b>Branch B:</b> Native ROI for IBSI Radiomics Engine.
+      </div>
+      <div class="node-meta">
+        <span>Branching: Synchronous</span>
+        <span style="color:#f59e0b;">Lossless Slicing</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card">
+      <div class="node-header">
+        <span class="node-tag" style="color:#94a3b8;">STEP 2.3</span>
+        <span style="font-size:10px;color:#94a3b8;font-weight:bold;">CALIBRATION</span>
+      </div>
+      <div class="node-title">Radiological Windowing</div>
+      <div class="node-body">
+        Applies preset window center & width: Brain [W:80, L:40], Subdural [W:200, L:75], or Bone [W:2000, L:600].
+      </div>
+      <div class="node-meta">
+        <span>Look-Up Table: Linear</span>
+        <span style="color:#cbd5e1;">Preserves Margin</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARROW 2 -->
+  <div class="arrow-col">
+    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <span style="font-size:9px;font-family:monospace;margin-top:4px;color:#d4af37;">224x224 RGB</span>
+  </div>
+
+  <!-- STAGE 3: CORE INFERENCE & RADIOMICS -->
+  <div class="column">
+    <div class="node-card cyan-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#06b6d4;">STAGE 3A</span>
+        <span style="font-size:10px;color:#06b6d4;font-weight:bold;">DEEP CNN</span>
+      </div>
+      <div class="node-title">EfficientNet-B0 Backbone</div>
+      <div class="node-body">
+        16 Inverted Residual Blocks (MBConv) with Swish activations & Squeeze-and-Excitation attention weighting sub-visual textures.
+      </div>
+      <div class="node-meta">
+        <span>Params: 5.3M</span>
+        <span style="color:#06b6d4;">Latency: 180ms</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card gold-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#f59e0b;">STAGE 3B</span>
+        <span style="font-size:10px;color:#f59e0b;font-weight:bold;">RADIOMICS</span>
+      </div>
+      <div class="node-title">IBSI Quantitative Engine</div>
+      <div class="node-body">
+        Extracts 15+ mathematical biomarkers: Sobel edge gradient, GLCM contrast, skewness, kurtosis, and GTR surgical resectability index.
+      </div>
+      <div class="node-meta">
+        <span>Standard: IBSI v2</span>
+        <span style="color:#f59e0b;">Margin: Sharp/Infiltrative</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card purple-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#c084fc;">STAGE 3C</span>
+        <span style="font-size:10px;color:#c084fc;font-weight:bold;">DNN HEAD</span>
+      </div>
+      <div class="node-title">Softmax Classifier & Grad-CAM</div>
+      <div class="node-body">
+        Dense(128) → Dropout(0.3) → Softmax(4 Classes: Glioma, Meningioma, Pituitary, Normal). Generates Attention Saliency heatmap.
+      </div>
+      <div class="node-meta">
+        <span>Classes: 4 Categorical</span>
+        <span style="color:#c084fc;">Top-1 Confidence</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARROW 3 -->
+  <div class="arrow-col">
+    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <span style="font-size:9px;font-family:monospace;margin-top:4px;color:#d4af37;">PREDICTION</span>
+  </div>
+
+  <!-- STAGE 4: DECISION GATE & SECOND OPINION -->
+  <div class="column">
+    <div class="diamond-card">
+      <div class="decision-title">CONFIDENCE GATEWAY</div>
+      <div class="decision-desc">
+        Is Top-1 Confidence &ge; 80% & Class &ne; NoTumor?
+      </div>
+      <div style="display:flex;justify-content:space-around;margin-top:10px;font-size:10.5px;font-weight:bold;font-family:monospace;">
+        <span style="color:#10b981;">[YES] &rarr; Definitive</span>
+        <span style="color:#f59e0b;">[NO] &rarr; Equivocal</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card gold-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#f59e0b;">STAGE 4A</span>
+        <span style="font-size:10px;color:#f59e0b;font-weight:bold;">LITERATURE</span>
+      </div>
+      <div class="node-title">Springer & AJNR Cross-Match</div>
+      <div class="node-body">
+        Cross-checks predicted class with peer-reviewed radiomic profiles: dural tail sign (Meningioma), intra-axial infiltration (Glioma), sellar enlargement (Pituitary).
+      </div>
+      <div class="node-meta">
+        <span>Source: Springer Nature</span>
+        <span style="color:#f59e0b;">100% Peer-Reviewed</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card purple-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#c084fc;">STAGE 4B</span>
+        <span style="font-size:10px;color:#c084fc;font-weight:bold;">OMNI-AI MESH</span>
+      </div>
+      <div class="node-title">Frontier 5-Engine Second Opinion</div>
+      <div class="node-body">
+        • <b>DeepMind:</b> IDH/MGMT subtype prediction.<br>
+        • <b>Astra 6:</b> Audio voice briefing.<br>
+        • <b>Claude Code:</b> DICOM-SR structured JSON.<br>
+        • <b>Canva/Huggsfield:</b> Infographic & 3D video.
+      </div>
+      <div class="node-meta">
+        <span>Multi-Model Mesh</span>
+        <span style="color:#c084fc;">Realtime Sync</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARROW 4 -->
+  <div class="arrow-col">
+    <svg class="arrow-svg" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <span style="font-size:9px;font-family:monospace;margin-top:4px;color:#d4af37;">FINAL REPORT</span>
+  </div>
+
+  <!-- STAGE 5: CLINICAL TRIAGE & SCHEDULING -->
+  <div class="column">
+    <div class="node-card cyan-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#06b6d4;">OUTPUT 5.1</span>
+        <span style="font-size:10px;color:#06b6d4;font-weight:bold;">HUD DISPLAY</span>
+      </div>
+      <div class="node-title">Interactive Radiologist Viewport</div>
+      <div class="node-body">
+        Target reticle coordinates [X, Y], adjustable aperture ring (scroll-wheel), Saliency heatmaps, and Sobel resectability indices.
+      </div>
+      <div class="node-meta">
+        <span>UI: Studio Studio</span>
+        <span style="color:#06b6d4;">Harley Street Std</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card green-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#10b981;">OUTPUT 5.2</span>
+        <span style="font-size:10px;color:#10b981;font-weight:bold;">CARE PROTOCOL</span>
+      </div>
+      <div class="node-title">Automated Clinical Scheduler</div>
+      <div class="node-body">
+        Generates timeline protocols (e.g. Dexamethasone, Neurosurgical biopsy, MRI follow-up at 72h) with alarm timers.
+      </div>
+      <div class="node-meta">
+        <span>Protocol: WHO CNS-5</span>
+        <span style="color:#10b981;">Auto-Scheduled</span>
+      </div>
+    </div>
+
+    <div class="vertical-connector"></div>
+
+    <div class="node-card red-border">
+      <div class="node-header">
+        <span class="node-tag" style="color:#ef4444;">OUTPUT 5.3</span>
+        <span style="font-size:10px;color:#ef4444;font-weight:bold;">EXPORT</span>
+      </div>
+      <div class="node-title">Diagnostic Dossier & Archive</div>
+      <div class="node-body">
+        Exports printable PDF diagnostic summary report, writes to MongoDB / JSON scan archive, and updates telemetry trends.
+      </div>
+      <div class="node-meta">
+        <span>Audit: DICOM-SR</span>
+        <span style="color:#ef4444;">Archive Logged</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
