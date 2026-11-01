@@ -10,6 +10,7 @@ import {
   SkiperTextReveal,
 } from '../components/skiper';
 import { ClinicalCareScheduler } from '../components/clinical-care-scheduler';
+import { Neural3DVisual } from '../components/neural-3d-visual';
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from 'wouter';
 import {
@@ -279,7 +280,8 @@ function RecentRows({
 // -------------------------------------------------------------
 export function LandingPage() {
   const [showPreloader, setShowPreloader] = useState<boolean>(true);
-  const [preloaderVariant, setPreloaderVariant] = useState<PreloaderVariant>("spasoje");
+  const [preloaderVariant, setPreloaderVariant] = useState<PreloaderVariant>("quick");
+  const [heroVisualMode, setHeroVisualMode] = useState<"3d" | "scanner">("3d");
 
   const handlePreloaderComplete = () => {
     setShowPreloader(false);
@@ -291,7 +293,7 @@ export function LandingPage() {
       {showPreloader && (
         <DiagnosticPreloader
           onComplete={handlePreloaderComplete}
-          durationMs={2400}
+          durationMs={450}
           initialVariant={preloaderVariant}
         />
       )}
@@ -444,61 +446,94 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* Interactive Hero Graphic: Dynamic Scanner Preview */}
+            {/* Interactive Hero Graphic: 3D Holographic Cortex vs Dynamic Scanner */}
             <div className="relative">
-              <div className="panel metallic-card relative overflow-hidden p-6 shadow-2xl border-blue-500/20">
-                <div className="flex items-center justify-between border-b border-border/70 pb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" />
-                    <span className="mono text-xs font-bold uppercase tracking-wider text-foreground">
-                      SCAN_ID // TE-RAD-0841
+              {/* Visual Mode Switcher */}
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+                  Biomedical Visualization
+                </span>
+                <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-xl border border-border/80">
+                  <button
+                    onClick={() => setHeroVisualMode("3d")}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      heroVisualMode === "3d"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Sparkles size={11} className={heroVisualMode === "3d" ? "text-accent animate-spin-slow" : ""} />
+                    <span>3D Cortex</span>
+                    <span className="rounded bg-accent/20 px-1 py-0.2 text-[9px] font-mono text-accent">NEW</span>
+                  </button>
+                  <button
+                    onClick={() => setHeroVisualMode("scanner")}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      heroVisualMode === "scanner"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Crosshair size={11} />
+                    <span>MRI Scanner</span>
+                  </button>
+                </div>
+              </div>
+
+              {heroVisualMode === "3d" ? (
+                <Neural3DVisual mode="interactive" width={520} height={420} className="w-full shadow-2xl" />
+              ) : (
+                <div className="panel metallic-card relative overflow-hidden p-6 shadow-2xl border-primary/20">
+                  <div className="flex items-center justify-between border-b border-border/70 pb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
+                      <span className="mono text-xs font-bold uppercase tracking-wider text-foreground">
+                        SCAN_ID // TE-RAD-0841
+                      </span>
+                    </div>
+                    <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+                      Axial Multi-Parametric MRI
                     </span>
                   </div>
-                  <span className="rounded-full bg-blue-500/10 px-2.5 py-0.5 text-[10px] font-bold text-blue-600 dark:text-blue-400">
-                    Axial Multi-Parametric MRI
-                  </span>
-                </div>
 
-                {/* Scan Visualizer with Bullseye Target */}
-                <div className="relative my-4 aspect-square overflow-hidden rounded-2xl bg-black p-2">
-                  <img
-                    src="/samples/sample-meningioma.jpg"
-                    alt="Clinical MRI Scan"
-                    className="h-full w-full rounded-xl object-contain opacity-90"
-                  />
+                  <div className="relative my-4 aspect-square overflow-hidden rounded-2xl bg-black p-2">
+                    <img
+                      src="/samples/sample-meningioma.jpg"
+                      alt="Clinical MRI Scan"
+                      className="h-full w-full rounded-xl object-contain opacity-90"
+                    />
 
-                  {/* Saliency Attention Overlay */}
-                  <div
-                    className="pointer-events-none absolute inset-0 rounded-xl opacity-50 mix-blend-screen"
-                    style={{
-                      background:
-                        'radial-gradient(circle at 62% 38%, rgba(239, 68, 68, 0.85) 0%, rgba(245, 158, 11, 0.6) 24%, rgba(37, 99, 246, 0.25) 50%, transparent 70%)',
-                    }}
-                  />
+                    <div
+                      className="pointer-events-none absolute inset-0 rounded-xl opacity-50 mix-blend-screen"
+                      style={{
+                        background:
+                          'radial-gradient(circle at 62% 38%, rgba(239, 68, 68, 0.85) 0%, rgba(245, 158, 11, 0.6) 24%, rgba(37, 99, 246, 0.25) 50%, transparent 70%)',
+                      }}
+                    />
 
-                  {/* Bullseye Reticle Target Overlay */}
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <div className="absolute left-0 right-0 top-[38%] h-px bg-blue-400/80 shadow-[0_0_4px_#3b82f6]" />
-                    <div className="absolute top-0 bottom-0 left-[62%] w-px bg-blue-400/80 shadow-[0_0_4px_#3b82f6]" />
-                    <div className="absolute top-[38%] left-[62%] -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full border-2 border-blue-400 shadow-[0_0_8px_#3b82f6] flex items-center justify-center">
-                      <div className="h-7 w-7 rounded-full border border-blue-300" />
-                      <div className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                      <div className="absolute left-0 right-0 top-[38%] h-px bg-primary/80 shadow-[0_0_4px_currentColor]" />
+                      <div className="absolute top-0 bottom-0 left-[62%] w-px bg-primary/80 shadow-[0_0_4px_currentColor]" />
+                      <div className="absolute top-[38%] left-[62%] -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full border-2 border-primary shadow-[0_0_8px_currentColor] flex items-center justify-center">
+                        <div className="h-7 w-7 rounded-full border border-primary/50" />
+                        <div className="h-1.5 w-1.5 rounded-full bg-accent" />
+                      </div>
+                    </div>
+
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-xl bg-black/80 px-3 py-1.5 backdrop-blur-md text-white text-xs">
+                      <span className="mono text-[10px] text-white/90">MENINGIOMA (82.9%)</span>
+                      <span className="mono text-[10px] font-bold text-accent">RETICLE: [X:138, Y:85]</span>
                     </div>
                   </div>
 
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-xl bg-black/80 px-3 py-1.5 backdrop-blur-md text-white text-xs">
-                    <span className="mono text-[10px] text-white/90">MENINGIOMA (82.9%)</span>
-                    <span className="mono text-[10px] font-bold text-blue-400">RETICLE: [X:138, Y:85]</span>
+                  <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1">
+                    <span className="flex items-center gap-1.5">
+                      <CheckCircle2 size={13} className="text-secondary" /> Resectability: 84.5% (High GTR)
+                    </span>
+                    <span className="mono">Sobel Margin: Sharp (0.84)</span>
                   </div>
                 </div>
-
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1">
-                  <span className="flex items-center gap-1.5">
-                    <CheckCircle2 size={13} className="text-emerald-500" /> Resectability: 84.5% (High GTR)
-                  </span>
-                  <span className="mono">Sobel Margin: Sharp (0.84)</span>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </section>

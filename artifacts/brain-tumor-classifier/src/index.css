@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import 'tailwindcss';
 
 @custom-variant dark (&:is(.dark *));
@@ -65,79 +65,88 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* NORDIC MINIMALIST — LIGHT THEME: Alabaster / Porcelain, Refined Slate, Sapphire Blue */
+/* =========================================================================
+   SOPHISTICATED ENGLISH HERITAGE PALETTE (SAVILE ROW & CAMBRIDGE CHALK)
+   - Background: Warm Cambridge Limestone / Parchment Ivory
+   - Primary: Regal Oxford Blue (Deep Cerebral Navy)
+   - Secondary: British Racing Green & English Sage
+   - Luxury Highlight: Westminster Antique Gold & Honey Brass
+   - Slate: Tailored St. James Charcoal Flannel
+========================================================================= */
 :root {
-  --button-outline: rgba(0, 0, 0, 0.08);
-  --badge-outline: rgba(0, 0, 0, 0.04);
+  --button-outline: rgba(15, 27, 43, 0.08);
+  --badge-outline: rgba(15, 27, 43, 0.05);
   --opaque-button-border-intensity: -8;
 
-  --elevate-1: rgba(0, 0, 0, 0.025);
-  --elevate-2: rgba(0, 0, 0, 0.06);
+  --elevate-1: rgba(15, 27, 43, 0.025);
+  --elevate-2: rgba(15, 27, 43, 0.06);
 
-  /* Background: Soft warm porcelain */
-  --background: 210 20% 98%;
-  --foreground: 222 47% 11%;
-  --border: 214 20% 89%;
+  /* Warm Cambridge Chalk / Academic Parchment */
+  --background: 40 24% 97%;
+  --foreground: 221 54% 13%;
+  --border: 38 18% 87%;
 
-  /* Cards: Crisp pure white with subtle shadow */
+  /* Crisp Royal Ivory Card Glass */
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --card-border: 214 20% 89%;
+  --card-foreground: 221 54% 13%;
+  --card-border: 38 20% 88%;
 
-  /* Sidebar: Clean Scandinavian cool slate */
-  --sidebar: 220 22% 96%;
-  --sidebar-foreground: 222 47% 14%;
-  --sidebar-border: 214 20% 88%;
-  --sidebar-primary: 221 83% 53%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 220 18% 91%;
-  --sidebar-accent-foreground: 222 47% 11%;
-  --sidebar-ring: 221 83% 53%;
+  /* Parlour Vellum Sidebar */
+  --sidebar: 40 20% 95%;
+  --sidebar-foreground: 221 54% 14%;
+  --sidebar-border: 38 18% 86%;
+  --sidebar-primary: 221 68% 28%;
+  --sidebar-primary-foreground: 40 33% 98%;
+  --sidebar-accent: 38 18% 89%;
+  --sidebar-accent-foreground: 221 54% 12%;
+  --sidebar-ring: 42 75% 48%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  --popover-border: 214 20% 89%;
+  --popover-foreground: 221 54% 13%;
+  --popover-border: 38 20% 88%;
 
-  /* Primary: Sapphire Blue */
-  --primary: 221 83% 53%;
-  --primary-foreground: 0 0% 100%;
+  /* Primary: Oxford Royal Navy */
+  --primary: 221 68% 28%;
+  --primary-foreground: 40 33% 98%;
 
-  /* Secondary: Soft Titanium / Warm Sand */
-  --secondary: 215 19% 35%;
+  /* Secondary: British Racing Green */
+  --secondary: 158 52% 24%;
   --secondary-foreground: 0 0% 100%;
 
-  /* Muted elements */
-  --muted: 210 20% 93%;
-  --muted-foreground: 215 16% 47%;
+  /* Muted Elements: Warm English Tweed */
+  --muted: 38 18% 91%;
+  --muted-foreground: 218 18% 44%;
 
-  --accent: 214 95% 93%;
-  --accent-foreground: 221 83% 45%;
+  /* Accent: Westminster Antique Gold & Brass */
+  --accent: 42 75% 48%;
+  --accent-foreground: 221 54% 12%;
 
-  --destructive: 0 84% 60%;
+  /* Destructive: Windsor Royal Burgundy */
+  --destructive: 348 68% 44%;
   --destructive-foreground: 0 0% 100%;
 
-  --input: 214 20% 85%;
-  --ring: 221 83% 53%;
+  --input: 38 18% 84%;
+  --ring: 42 75% 48%;
 
-  /* Charts: Nordic Sapphire, Sky, Emerald, Violet, Rose */
-  --chart-1: 221 83% 53%;
-  --chart-2: 199 89% 48%;
-  --chart-3: 160 84% 39%;
-  --chart-4: 262 83% 58%;
-  --chart-5: 346 84% 61%;
+  /* English Heritage Charts: Oxford Blue, British Racing Green, Westminster Gold, Windsor Claret, Cambridge Azure */
+  --chart-1: 221 68% 28%;
+  --chart-2: 158 52% 28%;
+  --chart-3: 42 75% 48%;
+  --chart-4: 348 68% 44%;
+  --chart-5: 198 62% 40%;
 
   --app-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --app-font-serif: 'Space Grotesk', 'Inter', sans-serif;
+  --app-font-serif: 'Cinzel', 'Playfair Display', serif;
   --app-font-mono: 'DM Mono', monospace;
-  --radius: 0.75rem;
+  --radius: 0.85rem;
 
-  --shadow-2xs: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-xs: 0 1px 3px rgba(15, 23, 42, 0.05);
-  --shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.06);
-  --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 14px 34px rgba(15, 23, 42, 0.10);
-  --shadow-xl: 0 20px 48px rgba(15, 23, 42, 0.12);
+  --shadow-2xs: 0 1px 2px rgba(15, 27, 43, 0.04);
+  --shadow-xs: 0 1px 3px rgba(15, 27, 43, 0.06);
+  --shadow-sm: 0 2px 8px rgba(15, 27, 43, 0.07);
+  --shadow: 0 4px 18px rgba(15, 27, 43, 0.08);
+  --shadow-md: 0 8px 28px rgba(15, 27, 43, 0.10);
+  --shadow-lg: 0 14px 40px rgba(15, 27, 43, 0.12);
+  --shadow-xl: 0 22px 56px rgba(15, 27, 43, 0.14);
 
   --primary-border: hsl(var(--primary));
   --secondary-border: hsl(var(--secondary));
@@ -148,71 +157,79 @@
   --sidebar-accent-border: hsl(var(--sidebar-accent));
 }
 
-/* NORDIC MINIMALIST — DARK THEME: Deep Obsidian, Graphite Glass, Electric Sapphire */
+/* =========================================================================
+   MIDNIGHT OXFORD & REGENT VELVET (DARK SUITE)
+   - Background: Midnight Oxford Obsidian
+   - Card Glass: Regent Velvet Charcoal
+   - Accents: Electric Oxford Cornflower & Luminous Westminster Gold
+   - Subtle Tailored Slate Borders
+========================================================================= */
 .dark {
-  --button-outline: rgba(255, 255, 255, 0.1);
-  --badge-outline: rgba(255, 255, 255, 0.06);
+  --button-outline: rgba(248, 246, 240, 0.1);
+  --badge-outline: rgba(248, 246, 240, 0.06);
   --opaque-button-border-intensity: 9;
 
-  --elevate-1: rgba(255, 255, 255, 0.035);
-  --elevate-2: rgba(255, 255, 255, 0.07);
+  --elevate-1: rgba(248, 246, 240, 0.035);
+  --elevate-2: rgba(248, 246, 240, 0.07);
 
-  /* Deep Scandinavian obsidian */
-  --background: 222 47% 7%;
-  --foreground: 210 40% 98%;
-  --border: 217 33% 17%;
+  /* Deep Midnight Oxford Obsidian */
+  --background: 222 42% 7%;
+  --foreground: 40 25% 96%;
+  --border: 220 28% 18%;
 
-  /* Dark card glass */
-  --card: 222 40% 10%;
-  --card-foreground: 210 40% 98%;
-  --card-border: 217 33% 18%;
+  /* Dark Regent Velvet Glass */
+  --card: 222 36% 11%;
+  --card-foreground: 40 25% 96%;
+  --card-border: 220 28% 20%;
 
-  /* Dark sidebar */
-  --sidebar: 222 47% 6%;
-  --sidebar-foreground: 210 40% 96%;
-  --sidebar-border: 217 33% 15%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 222 47% 8%;
-  --sidebar-accent: 222 36% 14%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-ring: 217 91% 60%;
+  /* Dark Windsor Sidebar */
+  --sidebar: 222 44% 6%;
+  --sidebar-foreground: 40 25% 94%;
+  --sidebar-border: 220 28% 15%;
+  --sidebar-primary: 217 82% 62%;
+  --sidebar-primary-foreground: 222 42% 7%;
+  --sidebar-accent: 222 30% 15%;
+  --sidebar-accent-foreground: 40 25% 96%;
+  --sidebar-ring: 42 80% 55%;
 
-  --popover: 222 40% 10%;
-  --popover-foreground: 210 40% 98%;
-  --popover-border: 217 33% 18%;
+  --popover: 222 36% 11%;
+  --popover-foreground: 40 25% 96%;
+  --popover-border: 220 28% 20%;
 
-  /* Electric Sapphire */
-  --primary: 217 91% 60%;
-  --primary-foreground: 222 47% 7%;
+  /* Electric Oxford Cornflower */
+  --primary: 217 82% 62%;
+  --primary-foreground: 222 42% 7%;
 
-  --secondary: 217 33% 28%;
-  --secondary-foreground: 210 40% 98%;
+  /* British Racing Green Neon */
+  --secondary: 158 52% 42%;
+  --secondary-foreground: 0 0% 100%;
 
-  --muted: 222 36% 14%;
-  --muted-foreground: 215 20% 65%;
+  --muted: 222 30% 15%;
+  --muted-foreground: 218 20% 68%;
 
-  --accent: 222 47% 16%;
-  --accent-foreground: 217 91% 70%;
+  /* Luminous Westminster Gold */
+  --accent: 42 80% 55%;
+  --accent-foreground: 222 42% 7%;
 
-  --destructive: 0 72% 51%;
+  --destructive: 348 70% 55%;
   --destructive-foreground: 0 0% 100%;
 
-  --input: 217 33% 22%;
-  --ring: 217 91% 60%;
+  --input: 220 28% 22%;
+  --ring: 42 80% 55%;
 
-  --chart-1: 217 91% 60%;
-  --chart-2: 199 89% 56%;
-  --chart-3: 160 84% 48%;
-  --chart-4: 262 83% 66%;
-  --chart-5: 346 84% 65%;
+  --chart-1: 217 82% 62%;
+  --chart-2: 158 52% 48%;
+  --chart-3: 42 80% 55%;
+  --chart-4: 348 70% 55%;
+  --chart-5: 198 75% 58%;
 
-  --shadow-2xs: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.5);
-  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.5);
-  --shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.8);
-  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.9);
+  --shadow-2xs: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.55);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.60);
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.70);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.75);
+  --shadow-lg: 0 16px 44px rgba(0, 0, 0, 0.85);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.95);
 }
 
 @layer base {
@@ -222,164 +239,72 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    background-image: radial-gradient(circle at 1px 1px, hsl(var(--foreground) / .04) 1px, transparent 0);
-    background-size: 24px 24px;
+    background-image: radial-gradient(circle at 1px 1px, hsl(var(--foreground) / .035) 1px, transparent 0);
+    background-size: 26px 26px;
   }
 }
 
 @layer components {
   .app-shell { min-height: 100dvh; }
-  .eyebrow { font-family: var(--app-font-mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: hsl(var(--muted-foreground)); font-weight: 500; }
-  .display { font-family: var(--app-font-serif); letter-spacing: -.035em; }
+  .eyebrow { font-family: var(--app-font-mono); font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: hsl(var(--muted-foreground)); font-weight: 600; }
+  .display { font-family: var(--app-font-serif); letter-spacing: -.02em; }
   .mono { font-family: var(--app-font-mono); }
   .panel {
     border: 1px solid hsl(var(--border));
-    background: hsl(var(--card) / .95);
+    background: hsl(var(--card) / .96);
     box-shadow: var(--shadow-xs);
-    border-radius: 0.875rem;
-    backdrop-filter: blur(8px);
+    border-radius: 1rem;
+    backdrop-filter: blur(12px);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .grid-lines {
-    background-image: linear-gradient(hsl(var(--border) / .4) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / .4) 1px, transparent 1px);
-    background-size: 32px 32px;
+  .panel:hover {
+    border-color: hsl(var(--primary) / .3);
+    box-shadow: var(--shadow-sm);
   }
-}
 
-@keyframes rise-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pulse-line { 0%,100% { opacity: .45; } 50% { opacity: 1; } }
-@keyframes pulse-subtle { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
-.animate-rise { animation: rise-in .4s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-rise-2 { animation: rise-in .4s .08s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-rise-3 { animation: rise-in .4s .16s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.pulse-line { animation: pulse-line 2.5s ease-in-out infinite; }
-.pulse-subtle { animation: pulse-subtle 3s ease-in-out infinite; }
+  /* English Heritage Crest & Laser Animations */
+  @keyframes laser-sweep {
+    0% { transform: translateY(-100%); opacity: 0.2; }
+    50% { opacity: 0.8; }
+    100% { transform: translateY(100%); opacity: 0.2; }
+  }
 
-/* Print Styles for Clinical Reports */
-@media print {
-  body {
-    background: white !important;
-    color: black !important;
-    background-image: none !important;
+  .animate-laser {
+    animation: laser-sweep 3s ease-in-out infinite;
   }
-  .no-print, aside, header, nav, button {
-    display: none !important;
+
+  @keyframes pulse-gold {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212, 160, 23, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(212, 160, 23, 0); }
   }
-  main {
-    margin: 0 !important;
-    padding: 0 !important;
+
+  .pulse-gold {
+    animation: pulse-gold 2.5s infinite;
   }
-  .printable-report {
-    display: block !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
+
+  /* Smooth 3D Card Hover Perspective */
+  .card-3d {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+    transform-style: preserve-3d;
+  }
+  .card-3d:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: var(--shadow-md);
   }
 }
 
-
-/* Skiper26 Symmetrical View Transition API Styles */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none !important;
-  mix-blend-mode: normal !important;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
 }
-
-::view-transition-old(root) {
-  z-index: 1 !important;
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
 }
-
-::view-transition-new(root) {
-  z-index: 99999 !important;
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / .3);
+  border-radius: 9999px;
 }
-
-
-/* Metallic Titanium & Chrome Hover Sheen Effects */
-.metallic-card {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.metallic-card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    60deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.06) 45%,
-    rgba(255, 255, 255, 0.32) 50%,
-    rgba(200, 225, 255, 0.2) 55%,
-    transparent 70%
-  );
-  transform: rotate(25deg) translateY(-120%);
-  transition: transform 0.75s ease;
-  pointer-events: none;
-}
-
-.metallic-card:hover::after {
-  transform: rotate(25deg) translateY(120%);
-}
-
-.metallic-card:hover {
-  border-color: rgba(148, 163, 184, 0.7) !important;
-  box-shadow: 0 10px 28px -4px rgba(100, 116, 139, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
-}
-
-.dark .metallic-card:hover {
-  border-color: rgba(148, 163, 184, 0.45) !important;
-  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 0 18px rgba(56, 189, 248, 0.18) !important;
-}
-
-.metallic-button {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.metallic-button::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -60%;
-  width: 220%;
-  height: 200%;
-  background: linear-gradient(
-    60deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.15) 45%,
-    rgba(255, 255, 255, 0.55) 50%,
-    rgba(255, 255, 255, 0.15) 55%,
-    transparent 80%
-  );
-  transform: rotate(30deg) translateX(-110%);
-  transition: transform 0.65s ease;
-  pointer-events: none;
-}
-
-.metallic-button:hover::after {
-  transform: rotate(30deg) translateX(110%);
-}
-
-.metallic-pill {
-  transition: all 0.25s ease;
-  background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(240,244,250,0.95) 100%);
-  border: 1px solid rgba(203, 213, 225, 0.8);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 4px rgba(0,0,0,0.04);
-}
-
-.dark .metallic-pill {
-  background: linear-gradient(135deg, rgba(30,41,59,0.85) 0%, rgba(15,23,42,0.95) 100%);
-  border: 1px solid rgba(71, 85, 105, 0.6);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 6px rgba(0,0,0,0.3);
-}
-
-.metallic-pill:hover {
-  border-color: rgba(59, 130, 246, 0.8);
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--accent) / .6);
 }

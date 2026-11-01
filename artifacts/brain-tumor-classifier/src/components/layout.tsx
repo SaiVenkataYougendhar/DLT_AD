@@ -38,23 +38,23 @@ const navItems = [
 export function BrandMark({ compact = false }: { compact?: boolean }) {
   return (
     <Link href="/" className="group flex items-center gap-3" data-testid="link-brand">
-      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm transition-transform duration-200 group-hover:scale-105">
+      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-md border border-primary/25 transition-transform duration-200 group-hover:scale-105">
         <Brain size={22} strokeWidth={2.2} />
         <span className="absolute -right-1 -top-1 flex h-3 w-3">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-60" />
-          <span className="relative inline-flex h-3 w-3 rounded-full border-2 border-background bg-blue-500" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+          <span className="relative inline-flex h-3 w-3 rounded-full border-2 border-background bg-accent" />
         </span>
       </div>
       {!compact && (
         <div className="leading-tight">
-          <div className="flex items-center gap-1.5 text-[15px] font-extrabold tracking-tight text-foreground">
+          <div className="flex items-center gap-1.5 text-[15px] font-black tracking-tight text-foreground font-serif">
             <span>RadCortex</span>
-            <span className="rounded bg-blue-500/10 dark:bg-blue-400/20 px-1 py-0.2 text-xs font-black tracking-normal text-blue-600 dark:text-blue-400">
+            <span className="rounded bg-accent/15 border border-accent/30 px-1.5 py-0.2 text-[11px] font-black tracking-normal text-accent">
               AI
             </span>
           </div>
           <span className="mt-0.5 block text-[8.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground truncate max-w-[170px]">
-            Deep Learning & Radiomics
+            Savile Clinical Suite
           </span>
         </div>
       )}
