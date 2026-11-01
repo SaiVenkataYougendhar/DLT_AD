@@ -10,7 +10,6 @@ import {
   SkiperTextReveal,
 } from '../components/skiper';
 import { ClinicalCareScheduler } from '../components/clinical-care-scheduler';
-import { Neural3DVisual } from '../components/neural-3d-visual';
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from 'wouter';
 import {
@@ -281,7 +280,6 @@ function RecentRows({
 export function LandingPage() {
   const [showPreloader, setShowPreloader] = useState<boolean>(true);
   const [preloaderVariant, setPreloaderVariant] = useState<PreloaderVariant>("quick");
-  const [heroVisualMode, setHeroVisualMode] = useState<"3d" | "scanner">("3d");
 
   const handlePreloaderComplete = () => {
     setShowPreloader(false);
@@ -446,94 +444,64 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* Interactive Hero Graphic: 3D Holographic Cortex vs Dynamic Scanner */}
+            {/* High-Precision Clinical Scanner Viewport */}
             <div className="relative">
-              {/* Visual Mode Switcher */}
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
-                  Biomedical Visualization
-                </span>
-                <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-xl border border-border/80">
-                  <button
-                    onClick={() => setHeroVisualMode("3d")}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                      heroVisualMode === "3d"
-                        ? "bg-primary text-primary-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    <Sparkles size={11} className={heroVisualMode === "3d" ? "text-accent animate-spin-slow" : ""} />
-                    <span>3D Cortex</span>
-                    <span className="rounded bg-accent/20 px-1 py-0.2 text-[9px] font-mono text-accent">NEW</span>
-                  </button>
-                  <button
-                    onClick={() => setHeroVisualMode("scanner")}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                      heroVisualMode === "scanner"
-                        ? "bg-primary text-primary-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    <Crosshair size={11} />
-                    <span>MRI Scanner</span>
-                  </button>
+              <div className="panel metallic-card relative overflow-hidden p-6 shadow-2xl border-primary/25 bg-card/90">
+                <div className="flex items-center justify-between border-b border-border/80 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
+                    <span className="mono text-xs font-bold uppercase tracking-wider text-foreground">
+                      SCAN_ID // RAD-OXFORD-0841
+                    </span>
+                  </div>
+                  <span className="rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+                    Axial T1-CE Multi-Parametric MRI
+                  </span>
+                </div>
+
+                {/* Scan Visualizer with Bullseye Target */}
+                <div className="relative my-4 aspect-square overflow-hidden rounded-2xl bg-black/95 p-2 border border-border/60">
+                  <img
+                    src="/samples/sample-meningioma.jpg"
+                    alt="Clinical MRI Scan"
+                    className="h-full w-full rounded-xl object-contain opacity-95"
+                  />
+
+                  {/* Saliency Attention Overlay */}
+                  <div
+                    className="pointer-events-none absolute inset-0 rounded-xl opacity-45 mix-blend-screen"
+                    style={{
+                      background:
+                        'radial-gradient(circle at 62% 38%, rgba(220, 38, 38, 0.85) 0%, rgba(212, 160, 23, 0.6) 24%, rgba(37, 99, 235, 0.25) 50%, transparent 70%)',
+                    }}
+                  />
+
+                  {/* Bullseye Reticle Target Overlay */}
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <div className="absolute left-0 right-0 top-[38%] h-px bg-primary/80 shadow-[0_0_6px_currentColor]" />
+                    <div className="absolute top-0 bottom-0 left-[62%] w-px bg-primary/80 shadow-[0_0_6px_currentColor]" />
+                    <div className="absolute top-[38%] left-[62%] -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full border-2 border-primary shadow-[0_0_10px_currentColor] flex items-center justify-center">
+                      <div className="h-7 w-7 rounded-full border border-primary/50" />
+                      <div className="h-1.5 w-1.5 rounded-full bg-accent" />
+                    </div>
+                  </div>
+
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-xl bg-black/85 px-3.5 py-2 backdrop-blur-md text-white text-xs border border-white/10">
+                    <span className="mono text-[10px] text-white/90 font-bold">MENINGIOMA (82.9%)</span>
+                    <span className="mono text-[10px] font-bold text-accent">RETICLE: [X:138, Y:85] · APERTURE: 68px</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px] pt-1 border-t border-border/60">
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <CheckCircle2 size={13} className="text-secondary" />
+                    <span>Resectability: <strong className="text-foreground">84.5% (High GTR)</strong></span>
+                  </div>
+                  <div className="text-right mono text-muted-foreground">
+                    Sobel Margin: <strong className="text-foreground">Sharp (0.84)</strong>
+                  </div>
                 </div>
               </div>
-
-              {heroVisualMode === "3d" ? (
-                <Neural3DVisual mode="interactive" width={520} height={420} className="w-full shadow-2xl" />
-              ) : (
-                <div className="panel metallic-card relative overflow-hidden p-6 shadow-2xl border-primary/20">
-                  <div className="flex items-center justify-between border-b border-border/70 pb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="h-2.5 w-2.5 rounded-full bg-primary animate-pulse" />
-                      <span className="mono text-xs font-bold uppercase tracking-wider text-foreground">
-                        SCAN_ID // TE-RAD-0841
-                      </span>
-                    </div>
-                    <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">
-                      Axial Multi-Parametric MRI
-                    </span>
-                  </div>
-
-                  <div className="relative my-4 aspect-square overflow-hidden rounded-2xl bg-black p-2">
-                    <img
-                      src="/samples/sample-meningioma.jpg"
-                      alt="Clinical MRI Scan"
-                      className="h-full w-full rounded-xl object-contain opacity-90"
-                    />
-
-                    <div
-                      className="pointer-events-none absolute inset-0 rounded-xl opacity-50 mix-blend-screen"
-                      style={{
-                        background:
-                          'radial-gradient(circle at 62% 38%, rgba(239, 68, 68, 0.85) 0%, rgba(245, 158, 11, 0.6) 24%, rgba(37, 99, 246, 0.25) 50%, transparent 70%)',
-                      }}
-                    />
-
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                      <div className="absolute left-0 right-0 top-[38%] h-px bg-primary/80 shadow-[0_0_4px_currentColor]" />
-                      <div className="absolute top-0 bottom-0 left-[62%] w-px bg-primary/80 shadow-[0_0_4px_currentColor]" />
-                      <div className="absolute top-[38%] left-[62%] -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full border-2 border-primary shadow-[0_0_8px_currentColor] flex items-center justify-center">
-                        <div className="h-7 w-7 rounded-full border border-primary/50" />
-                        <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                      </div>
-                    </div>
-
-                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between rounded-xl bg-black/80 px-3 py-1.5 backdrop-blur-md text-white text-xs">
-                      <span className="mono text-[10px] text-white/90">MENINGIOMA (82.9%)</span>
-                      <span className="mono text-[10px] font-bold text-accent">RETICLE: [X:138, Y:85]</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1">
-                    <span className="flex items-center gap-1.5">
-                      <CheckCircle2 size={13} className="text-secondary" /> Resectability: 84.5% (High GTR)
-                    </span>
-                    <span className="mono">Sobel Margin: Sharp (0.84)</span>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </section>
@@ -1109,57 +1077,80 @@ export function ClassifyPage() {
   return (
     <AppShell>
       <PageHeader
-        eyebrow="Neural Classification Studio"
-        title="Analyze Cranial MRI"
-        description="Select a sample from the clinical library or upload an MRI scan to perform inference through the EfficientNetB0 neural model."
+        eyebrow="HARLEY STREET CLINICAL STANDARD // MULTI-MODAL NEURAL CLASSIFIER"
+        title="Analyze Cranial MRI & Multi-Organ Scans"
+        description="High-precision convolutional inference across axial, coronal, and sagittal scans with real-time saliency mapping, calibrated aperture reticle, and Springer radiomic biomarker validation."
       />
 
       {/* 1-CLICK SAMPLE SCAN GALLERY */}
       <section className="mb-8">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="eyebrow flex items-center gap-1.5 text-foreground">
+        <div className="mb-3.5 flex items-center justify-between">
+          <div className="eyebrow flex items-center gap-2 text-foreground font-mono uppercase tracking-wider text-xs">
             <Sparkles size={13} className="text-primary" />
             <span>1-Click Test Library</span>
+            <span className="rounded-full bg-primary/10 border border-primary/20 px-2 py-0.2 text-[9px] font-bold text-primary">
+              Standardized Cohort
+            </span>
           </div>
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-[11px] font-medium text-muted-foreground">
             Click any reference scan to test instantly
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {sampleScans.map((sample) => (
-            <button
-              key={sample.id}
-              onClick={() => loadSample(sample)}
-              className="panel group flex items-center gap-3 p-2.5 text-left transition-all duration-150 hover:border-primary/50 hover:shadow-sm"
-              title={`Load sample ${sample.name}`}
-            >
-              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-black">
-                <img
-                  src={sample.path}
-                  alt={sample.name}
-                  className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-110"
-                />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1">
-                  <span className="truncate text-xs font-bold text-foreground">{sample.name}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {sampleScans.map((sample) => {
+            const isSelected = file?.name?.toLowerCase().includes(sample.id) || preview === sample.path;
+            return (
+              <button
+                key={sample.id}
+                type="button"
+                onClick={() => loadSample(sample)}
+                className={`panel group flex h-[72px] items-center gap-3 p-3 text-left transition-all duration-200 border ${
+                  isSelected
+                    ? 'border-primary ring-2 ring-primary/30 bg-primary/5 shadow-md'
+                    : 'border-border/80 hover:border-primary/50 hover:bg-muted/40 shadow-sm'
+                }`}
+                title={`Load sample ${sample.name}`}
+              >
+                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-black border border-border/60">
+                  <img
+                    src={sample.path}
+                    alt={sample.name}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  {isSelected && (
+                    <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                      <CheckCircle2 size={16} className="text-white drop-shadow" />
+                    </div>
+                  )}
                 </div>
-                <div className="truncate text-[10px] text-muted-foreground">{sample.description}</div>
-              </div>
-            </button>
-          ))}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="truncate text-xs font-bold text-foreground font-serif tracking-tight">{sample.name}</span>
+                    <span className={`shrink-0 rounded px-1.5 py-0.5 text-[8.5px] font-bold uppercase tracking-wider font-mono ${
+                      sample.id === 'notumor'
+                        ? 'bg-secondary/15 text-secondary border border-secondary/25'
+                        : 'bg-primary/15 text-primary border border-primary/25'
+                    }`}>
+                      {sample.id === 'notumor' ? 'Normal' : 'Tumor'}
+                    </span>
+                  </div>
+                  <div className="truncate text-[10.5px] text-muted-foreground mt-0.5">{sample.description}</div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </section>
 
-      {/* MAIN TWO-COLUMN WORKSPACE */}
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
+      {/* MAIN TWO-COLUMN WORKSPACE WITH MATHEMATICAL VERTICAL SYMMETRY */}
+      <div className="grid gap-6 lg:grid-cols-2 items-start">
         {/* Left Column: Image Dropzone & Inspection Tools */}
-        <section className="panel p-6">
+        <section className="panel p-6 shadow-md border-border/80 flex flex-col justify-between">
           <SectionLabel
             right={
-              <span className="mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="mono text-[10px] font-bold text-secondary flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
                 ANY FILE LENGTH / SIZE ACCEPTED · MULTI-FORMAT
               </span>
             }
@@ -1168,7 +1159,7 @@ export function ClassifyPage() {
           </SectionLabel>
 
           {/* Interactive Viewport */}
-          <div className="relative min-h-[380px] overflow-hidden rounded-2xl border border-dashed border-border bg-muted/20">
+          <div className="relative min-h-[420px] overflow-hidden rounded-2xl border border-dashed border-border bg-black/95">
             {preview ? (
               <div
                 ref={viewportRef}
@@ -1176,16 +1167,22 @@ export function ClassifyPage() {
                 onPointerDown={handlePointerDown}
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}
-                className={`relative flex h-[380px] w-full items-center justify-center overflow-hidden bg-black/95 p-4 select-none ${
+                className={`relative flex min-h-[420px] h-full w-full items-center justify-center overflow-hidden bg-black/95 p-4 select-none ${
                   showCrosshair ? 'cursor-crosshair active:cursor-grabbing' : ''
                 }`}
               >
+                {/* Visual Corner Reticle HUD Brackets */}
+                <div className="pointer-events-none absolute left-3 top-3 h-4 w-4 border-l-2 border-t-2 border-primary/40" />
+                <div className="pointer-events-none absolute right-3 top-3 h-4 w-4 border-r-2 border-t-2 border-primary/40" />
+                <div className="pointer-events-none absolute bottom-3 left-3 h-4 w-4 border-b-2 border-l-2 border-primary/40" />
+                <div className="pointer-events-none absolute bottom-3 right-3 h-4 w-4 border-b-2 border-r-2 border-primary/40" />
+
                 {/* MRI Image with dynamic filters */}
                 <img
                   src={preview}
                   alt="MRI Viewport"
                   draggable={false}
-                  className="max-h-full max-w-full select-none object-contain transition-all duration-150 pointer-events-none"
+                  className="max-h-[380px] max-w-full select-none object-contain transition-all duration-150 pointer-events-none"
                   style={{
                     filter: `brightness(${brightness}%) contrast(${contrast}%) ${invert ? 'invert(100%)' : ''}`,
                     transform: `scale(${zoom})`,
@@ -1208,18 +1205,18 @@ export function ClassifyPage() {
                   <div className="pointer-events-none absolute inset-0 overflow-hidden">
                     {/* Full-width horizontal hair */}
                     <div
-                      className="absolute left-0 right-0 h-px bg-blue-500/80 shadow-[0_0_6px_rgba(59,130,246,0.9)]"
+                      className="absolute left-0 right-0 h-px bg-primary/80 shadow-[0_0_6px_currentColor]"
                       style={{ top: `${reticlePos.y}%` }}
                     />
                     {/* Full-height vertical hair */}
                     <div
-                      className="absolute top-0 bottom-0 w-px bg-blue-500/80 shadow-[0_0_6px_rgba(59,130,246,0.9)]"
+                      className="absolute top-0 bottom-0 w-px bg-primary/80 shadow-[0_0_6px_currentColor]"
                       style={{ left: `${reticlePos.x}%` }}
                     />
 
                     {/* Concentric Bullseye Rings with Dynamic Radius */}
                     <div
-                      className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.7)] flex items-center justify-center transition-all duration-75"
+                      className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary shadow-[0_0_12px_currentColor] flex items-center justify-center transition-all duration-75"
                       style={{
                         left: `${reticlePos.x}%`,
                         top: `${reticlePos.y}%`,
@@ -1229,37 +1226,41 @@ export function ClassifyPage() {
                     >
                       {/* Inner concentric ring */}
                       <div
-                        className="rounded-full border border-blue-300/80"
+                        className="rounded-full border border-primary/60"
                         style={{
                           width: `${Math.round(reticleRadius * 0.7)}px`,
                           height: `${Math.round(reticleRadius * 0.7)}px`,
                         }}
                       />
                       {/* Center pinpoint */}
-                      <div className="absolute h-1.5 w-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_#60a5fa]" />
+                      <div className="absolute h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_currentColor]" />
 
                       {/* Cardinal compass marks */}
-                      <div className="absolute -top-1.5 h-1.5 w-0.5 bg-blue-400" />
-                      <div className="absolute -bottom-1.5 h-1.5 w-0.5 bg-blue-400" />
-                      <div className="absolute -left-1.5 h-0.5 w-1.5 bg-blue-400" />
-                      <div className="absolute -right-1.5 h-0.5 w-1.5 bg-blue-400" />
+                      <div className="absolute -top-2 h-2 w-0.5 bg-primary" />
+                      <div className="absolute -bottom-2 h-2 w-0.5 bg-primary" />
+                      <div className="absolute -left-2 h-0.5 w-2 bg-primary" />
+                      <div className="absolute -right-2 h-0.5 w-2 bg-primary" />
                     </div>
 
                     {/* Dynamic coordinate readout HUD */}
-                    <div className="absolute bottom-3 right-3 flex items-center gap-2 rounded-lg bg-black/80 px-2.5 py-1 backdrop-blur-md text-[10px] font-mono border border-blue-500/40 text-blue-300">
+                    <div className="absolute bottom-4 right-4 flex items-center gap-2 rounded-lg bg-black/85 px-3 py-1.5 backdrop-blur-md text-[10.5px] font-mono border border-primary/40 text-primary">
                       <span className="font-bold text-white">RETICLE: [X:{Math.round(reticlePos.x * 2.24)}, Y:{Math.round(reticlePos.y * 2.24)}]</span>
-                      <span>·</span>
-                      <span className="text-emerald-400 font-semibold">APERTURE: {reticleRadius * 2}px</span>
+                      <span className="text-white/40">·</span>
+                      <span className="text-accent font-bold">APERTURE: {reticleRadius * 2}px</span>
                     </div>
                   </div>
                 )}
 
                 {/* Viewport Top Overlay Bar */}
-                <div className="absolute left-3 right-3 top-3 flex items-center justify-between rounded-lg bg-black/60 px-3 py-1.5 backdrop-blur text-white text-xs">
-                  <span className="mono truncate text-[11px] text-white/90">{file?.name}</span>
+                <div className="absolute left-4 right-4 top-4 flex items-center justify-between rounded-xl bg-black/80 px-3.5 py-2 backdrop-blur border border-white/10 text-white text-xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
+                    <span className="mono truncate text-[11px] font-bold text-white/95">{file?.name}</span>
+                  </div>
                   <button
+                    type="button"
                     onClick={reset}
-                    className="rounded p-1 text-white/70 hover:bg-white/10 hover:text-white"
+                    className="rounded-lg p-1 text-white/70 hover:bg-white/15 hover:text-white transition"
                     title="Remove scan"
                   >
                     <X size={14} />
@@ -1273,7 +1274,7 @@ export function ClassifyPage() {
                   e.preventDefault();
                   chooseFile(e.dataTransfer.files[0]);
                 }}
-                className="flex min-h-[380px] cursor-pointer flex-col items-center justify-center px-6 text-center transition hover:bg-muted/40"
+                className="flex min-h-[420px] cursor-pointer flex-col items-center justify-center p-8 text-center transition hover:bg-muted/10 group"
                 data-testid="dropzone-mri"
               >
                 <input
@@ -1283,47 +1284,51 @@ export function ClassifyPage() {
                   onChange={(e) => chooseFile(e.target.files?.[0])}
                   data-testid="input-mri-file"
                 />
-                <UploadGlyph />
-                <h3 className="mt-4 text-sm font-bold text-foreground">
-                  Drop cranial MRI scan here
+                <div className="h-16 w-16 rounded-2xl border border-border/80 bg-muted/40 flex items-center justify-center group-hover:scale-105 group-hover:border-primary transition duration-200">
+                  <UploadGlyph />
+                </div>
+                <h3 className="mt-4 text-base font-bold text-foreground font-serif">
+                  Drop Cranial or Multi-Organ Scan Here
                 </h3>
-                <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-muted-foreground">
-                  or select any scan from your computer. Accepts any file length and resolution with zero size limits.
+                <p className="mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground">
+                  Accepts DICOM, JPEG, PNG, TIFF, and NIfTI files of any length or resolution with zero size restrictions.
                 </p>
-                <span className="mt-4 rounded-full border border-border bg-card px-3 py-1 text-[11px] font-semibold text-primary">
-                  Browse File
+                <span className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary group-hover:bg-primary group-hover:text-primary-foreground transition">
+                  <Upload size={13} />
+                  Browse Files
                 </span>
               </label>
             )}
           </div>
 
-          {/* INSPECTION TOOLBAR CONTROLS */}
+          {/* INSPECTION TOOLBAR CONTROLS - MATHEMATICALLY BALANCED 4-COLUMN GRID */}
           {preview && (
             <div className="mt-4 rounded-xl border border-border/80 bg-muted/30 p-3.5 text-xs">
-              <div className="mb-2 flex items-center justify-between">
-                <span className="eyebrow flex items-center gap-1.5 text-foreground">
-                  <SlidersHorizontal size={12} />
+              <div className="mb-2.5 flex items-center justify-between">
+                <span className="eyebrow flex items-center gap-1.5 text-foreground font-mono uppercase text-xs">
+                  <SlidersHorizontal size={12} className="text-primary" />
                   Radiological Controls
                 </span>
                 <button
+                  type="button"
                   onClick={() => {
                     setBrightness(100);
                     setContrast(100);
                     setInvert(false);
                     setZoom(1);
                   }}
-                  className="text-[10px] font-semibold text-muted-foreground hover:text-foreground"
+                  className="text-[10px] font-semibold text-muted-foreground hover:text-foreground transition hover:underline"
                 >
                   Reset Adjustments
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {/* Brightness */}
-                <div>
-                  <div className="mb-1 flex justify-between text-[10px] text-muted-foreground">
-                    <span>Brightness</span>
-                    <span className="mono">{brightness}%</span>
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                {/* 1. Brightness */}
+                <div className="flex flex-col justify-between rounded-lg border border-border/70 bg-card/70 p-2.5 h-[68px]">
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="font-semibold text-muted-foreground">Brightness</span>
+                    <span className="mono font-bold text-primary">{brightness}%</span>
                   </div>
                   <input
                     type="range"
@@ -1335,11 +1340,11 @@ export function ClassifyPage() {
                   />
                 </div>
 
-                {/* Contrast */}
-                <div>
-                  <div className="mb-1 flex justify-between text-[10px] text-muted-foreground">
-                    <span>Contrast</span>
-                    <span className="mono">{contrast}%</span>
+                {/* 2. Contrast */}
+                <div className="flex flex-col justify-between rounded-lg border border-border/70 bg-card/70 p-2.5 h-[68px]">
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="font-semibold text-muted-foreground">Contrast</span>
+                    <span className="mono font-bold text-primary">{contrast}%</span>
                   </div>
                   <input
                     type="range"
@@ -1351,20 +1356,25 @@ export function ClassifyPage() {
                   />
                 </div>
 
-                {/* Zoom Controls */}
-                <div>
-                  <div className="mb-1 text-[10px] text-muted-foreground">Zoom Level ({zoom}x)</div>
-                  <div className="flex gap-1">
+                {/* 3. Zoom Controls */}
+                <div className="flex flex-col justify-between rounded-lg border border-border/70 bg-card/70 p-2.5 h-[68px]">
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="font-semibold text-muted-foreground">Zoom Level</span>
+                    <span className="mono font-bold text-primary">{zoom.toFixed(2)}x</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5">
                     <button
+                      type="button"
                       onClick={() => setZoom((z) => Math.max(1, +(z - 0.25).toFixed(2)))}
-                      className="flex h-6 flex-1 items-center justify-center rounded border border-border bg-card hover:bg-muted"
+                      className="flex h-6 items-center justify-center rounded border border-border bg-background hover:bg-muted text-foreground transition text-xs"
                       title="Zoom Out"
                     >
                       <Minus size={11} />
                     </button>
                     <button
+                      type="button"
                       onClick={() => setZoom((z) => Math.min(2.5, +(z + 0.25).toFixed(2)))}
-                      className="flex h-6 flex-1 items-center justify-center rounded border border-border bg-card hover:bg-muted"
+                      className="flex h-6 items-center justify-center rounded border border-border bg-background hover:bg-muted text-foreground transition text-xs"
                       title="Zoom In"
                     >
                       <Plus size={11} />
@@ -1372,27 +1382,32 @@ export function ClassifyPage() {
                   </div>
                 </div>
 
-                {/* Invert & Reticle Toggles */}
-                <div>
-                  <div className="mb-1 text-[10px] text-muted-foreground">Overlay Mode</div>
-                  <div className="flex gap-1">
+                {/* 4. Overlay & Reticle Toggles */}
+                <div className="flex flex-col justify-between rounded-lg border border-border/70 bg-card/70 p-2.5 h-[68px]">
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="font-semibold text-muted-foreground">Overlay Mode</span>
+                    <span className="mono font-bold text-accent">{showCrosshair ? 'Reticle' : invert ? 'Inverted' : 'Standard'}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5">
                     <button
+                      type="button"
                       onClick={() => setInvert((i) => !i)}
-                      className={`flex h-6 flex-1 items-center justify-center rounded border text-[10px] font-semibold transition ${
-                        invert ? 'bg-primary text-primary-foreground border-primary' : 'border-border bg-card'
+                      className={`flex h-6 items-center justify-center rounded border text-[10px] font-bold transition ${
+                        invert ? 'bg-primary text-primary-foreground border-primary shadow-sm' : 'border-border bg-background text-muted-foreground hover:text-foreground hover:bg-muted'
                       }`}
                       title="Invert Image (Radiological Window)"
                     >
                       Invert
                     </button>
                     <button
+                      type="button"
                       onClick={() => setShowCrosshair((c) => !c)}
-                      className={`flex h-6 flex-1 items-center justify-center rounded border text-[10px] font-semibold transition ${
-                        showCrosshair ? 'bg-primary text-primary-foreground border-primary' : 'border-border bg-card'
+                      className={`flex h-6 items-center justify-center rounded border text-[10px] font-bold transition ${
+                        showCrosshair ? 'bg-accent text-accent-foreground border-accent shadow-sm' : 'border-border bg-background text-muted-foreground hover:text-foreground hover:bg-muted'
                       }`}
                       title="Toggle Targeting Reticle"
                     >
-                      Target
+                      Reticle
                     </button>
                   </div>
                 </div>
@@ -1400,26 +1415,27 @@ export function ClassifyPage() {
 
               {/* Heatmap Saliency Slider */}
               {result && (
-                <div className="mt-3 border-t border-border/60 pt-3">
+                <div className="mt-3.5 rounded-lg border border-amber-500/25 bg-amber-500/5 p-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Flame size={13} className="text-amber-500" />
+                      <Flame size={14} className="text-amber-500" />
                       <span className="text-[11px] font-bold text-foreground">
-                        Attention Region of Interest (Saliency Map)
+                        Saliency Activation Region of Interest (CAM)
                       </span>
                     </div>
                     <button
+                      type="button"
                       onClick={() => setShowHeatmap((h) => !h)}
-                      className={`rounded px-2 py-0.5 text-[10px] font-bold ${
-                        showHeatmap ? 'bg-amber-500/15 text-amber-500' : 'bg-muted text-muted-foreground'
+                      className={`rounded px-2.5 py-0.5 text-[10px] font-bold transition ${
+                        showHeatmap ? 'bg-amber-500 text-white shadow-sm' : 'bg-muted text-muted-foreground'
                       }`}
                     >
                       {showHeatmap ? 'Heatmap Active' : 'Hidden'}
                     </button>
                   </div>
                   {showHeatmap && (
-                    <div className="mt-2 flex items-center gap-3">
-                      <span className="mono text-[10px] text-muted-foreground">Opacity:</span>
+                    <div className="mt-2.5 flex items-center gap-3">
+                      <span className="mono text-[10px] text-muted-foreground font-semibold">Opacity:</span>
                       <input
                         type="range"
                         min="15"
@@ -1428,7 +1444,7 @@ export function ClassifyPage() {
                         onChange={(e) => setHeatmapOpacity(Number(e.target.value))}
                         className="h-1.5 flex-1 cursor-pointer accent-amber-500"
                       />
-                      <span className="mono text-[10px] text-muted-foreground">{heatmapOpacity}%</span>
+                      <span className="mono text-[10px] font-bold text-amber-600 dark:text-amber-400 min-w-[32px] text-right">{heatmapOpacity}%</span>
                     </div>
                   )}
                 </div>
@@ -1437,9 +1453,15 @@ export function ClassifyPage() {
           )}
 
           {/* Action Row */}
-          <div className="mt-5 flex items-center justify-between gap-4">
-            <span className="text-[11px] text-muted-foreground">
-              {file ? 'Scan loaded & calibrated.' : 'Select a scan to enable analysis.'}
+          <div className="mt-5 flex items-center justify-between gap-4 border-t border-border/60 pt-4">
+            <span className="text-xs text-muted-foreground">
+              {file ? (
+                <span className="flex items-center gap-1.5 text-foreground font-medium">
+                  <CheckCircle2 size={13} className="text-secondary" /> Scan calibrated & ready for inference
+                </span>
+              ) : (
+                'Select a library scan or upload a file to begin.'
+              )}
             </span>
 
             {result ? (
@@ -1486,106 +1508,130 @@ export function ClassifyPage() {
         </section>
 
         {/* Right Column: Prediction Output */}
-        <section className="panel p-6">
+        <section className="panel p-6 shadow-md border-border/80 flex flex-col justify-between">
           <SectionLabel>Inference Telemetry Output</SectionLabel>
 
           {isRunning ? (
-            <div className="flex min-h-[380px] flex-col items-center justify-center rounded-2xl border border-border bg-muted/20 px-8 text-center">
+            <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-border bg-muted/20 px-8 text-center">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-card text-primary shadow-sm">
                 <RefreshCw size={24} className="animate-spin" />
               </div>
-              <h3 className="font-bold text-foreground">Computing Tensor Activations...</h3>
-              <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-muted-foreground">
+              <h3 className="font-serif text-base font-bold text-foreground">Computing Tensor Activations...</h3>
+              <p className="mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
                 Passing preprocessed 224x224 RGB tensor through 16 convolutional blocks of EfficientNetB0.
               </p>
             </div>
           ) : result ? (
-            <div className="animate-rise">
+            <div className="animate-rise space-y-4">
               {/* Highlight Diagnosis Card */}
-              <div className="rounded-2xl border border-primary/25 bg-primary/5 p-6 shadow-sm">
+              <div className="rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/10 via-card to-card p-6 shadow-md">
                 <div className="flex items-center justify-between">
-                  <div className="eyebrow text-primary">Primary Prediction</div>
+                  <div className="eyebrow flex items-center gap-1.5 text-primary font-mono uppercase text-xs">
+                    <Activity size={12} />
+                    <span>Primary Diagnostic Inference</span>
+                  </div>
                   <span
-                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                    className={`rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider font-mono ${
                       result.predicted_class === 'notumor'
-                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
-                        : 'bg-primary/15 text-primary'
+                        ? 'bg-secondary/15 text-secondary border border-secondary/30'
+                        : 'bg-primary/15 text-primary border border-primary/30'
                     }`}
                   >
                     {result.predicted_class === 'notumor' ? 'Non-Tumor Baseline' : 'Tumor Mass Detected'}
                   </span>
                 </div>
 
-                <h2 className="display mt-3 text-3xl font-extrabold capitalize text-foreground">
-                  {result.predicted_class || result.prediction}
-                </h2>
+                <div className="mt-3 flex items-baseline justify-between">
+                  <h2 className="font-serif text-3xl font-black capitalize tracking-tight text-foreground">
+                    {result.predicted_class === 'notumor' ? 'Healthy Brain Tissue' : (result.predicted_class || result.prediction)}
+                  </h2>
+                </div>
 
-                <div className="mt-5 grid grid-cols-2 gap-4 border-t border-primary/15 pt-4">
-                  <div>
-                    <div className="eyebrow">Confidence Level</div>
-                    <div className="mono mt-1 text-2xl font-black text-primary">
+                <div className="mt-5 grid grid-cols-2 gap-4 border-t border-border/60 pt-4">
+                  <div className="rounded-xl border border-border/70 bg-card/80 p-3">
+                    <div className="eyebrow text-muted-foreground font-mono uppercase text-[10px]">Confidence Level</div>
+                    <div className="mono mt-1 text-3xl font-black text-primary">
                       {formatPercent(result.confidence)}
                     </div>
                   </div>
-                  <div>
-                    <div className="eyebrow">Architecture</div>
-                    <div className="mono mt-1 text-xs text-foreground/80">{result.model_version}</div>
+                  <div className="rounded-xl border border-border/70 bg-card/80 p-3">
+                    <div className="eyebrow text-muted-foreground font-mono uppercase text-[10px]">Backbone Architecture</div>
+                    <div className="mono mt-1 text-sm font-bold text-foreground">
+                      {result.model_version || 'EfficientNet-B0'}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground mt-0.5">16 Inverted Residual Blocks</div>
                   </div>
                 </div>
 
                 {result.clinical_rationale && (
-                  <div className="mt-4 rounded-xl border border-primary/25 bg-background/80 p-3.5 text-[11px] leading-relaxed text-muted-foreground shadow-sm">
-                    <strong className="text-foreground flex items-center gap-1.5 mb-1 font-semibold text-primary">
-                      <Sparkles size={13} /> Springer Multi-Modal Radiomics Validation:
-                    </strong>
-                    {result.clinical_rationale}
+                  <div className="mt-4 rounded-xl border border-accent/25 bg-accent/5 p-3.5 text-xs leading-relaxed text-foreground/90 shadow-sm">
+                    <div className="flex items-center gap-1.5 mb-1.5 font-bold text-accent text-[11px] uppercase tracking-wider font-mono">
+                      <Sparkles size={13} />
+                      <span>Springer Radiomics Peer-Reviewed Literature Validation</span>
+                    </div>
+                    <p className="font-serif italic text-foreground/85 leading-normal pl-2 border-l-2 border-accent/40">
+                      "{result.clinical_rationale}"
+                    </p>
                   </div>
                 )}
 
                 <Link
                   href="/backend-neural-networking"
-                  className="mt-3.5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-4 py-2.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/20 transition shadow-sm"
+                  className="mt-3.5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-4 py-2.5 text-xs font-bold text-primary hover:bg-primary/20 transition shadow-sm"
                 >
                   <Network size={14} />
                   <span>Inspect Dual CNN + DNN Neural Routing & Literature Citations</span>
                   <ArrowRight size={13} />
                 </Link>
 
-
                 {/* Omni-AI Multi-Engine Second Opinion Trigger */}
-                <div className="mt-3.5 rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-950/20 via-card to-blue-950/20 p-4 shadow-md space-y-3">
+                <div className="mt-4 rounded-xl border border-primary/25 bg-card/90 p-4 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Sparkles size={14} className="text-purple-400 animate-pulse" />
-                      <span className="text-xs font-extrabold text-foreground">Omni-AI Multi-Engine Second Opinion</span>
+                      <Sparkles size={14} className="text-accent animate-pulse" />
+                      <span className="text-xs font-black uppercase tracking-wider text-foreground font-mono">
+                        Omni-AI Multi-Engine Second Opinion
+                      </span>
                     </div>
-                    <span className="rounded bg-purple-500/15 border border-purple-500/30 px-2 py-0.5 text-[9px] font-bold text-purple-400">
+                    <span className="rounded bg-accent/15 border border-accent/30 px-2 py-0.5 text-[9px] font-bold text-accent font-mono">
                       5 FRONTIER ENGINES
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-[11px]">
-                    <div className="rounded-lg border border-border/80 bg-card/60 p-2 text-muted-foreground">
-                      <strong className="text-foreground block font-bold">DeepMind Genomics:</strong>
-                      {result?.omni_ai?.models?.google_deepmind?.molecular_subtype || "IDH/MGMT Subtype Inferred"}
+                    <div className="rounded-lg border border-border/70 bg-background/60 p-2.5">
+                      <strong className="text-foreground block font-bold text-[10px] uppercase font-mono tracking-wider text-muted-foreground mb-0.5">
+                        DeepMind Genomics
+                      </strong>
+                      <span className="text-foreground font-medium">
+                        {result?.omni_ai?.models?.google_deepmind?.molecular_subtype || "IDH/MGMT Subtype Inferred"}
+                      </span>
                     </div>
-                    <div className="rounded-lg border border-border/80 bg-card/60 p-2 text-muted-foreground">
-                      <strong className="text-foreground block font-bold">Astra 6 Voice:</strong>
-                      {result?.omni_ai?.models?.chatgpt_astra_6?.tone || "Realtime Audio Synthesized"}
+                    <div className="rounded-lg border border-border/70 bg-background/60 p-2.5">
+                      <strong className="text-foreground block font-bold text-[10px] uppercase font-mono tracking-wider text-muted-foreground mb-0.5">
+                        Astra 6 Voice
+                      </strong>
+                      <span className="text-foreground font-medium">
+                        {result?.omni_ai?.models?.chatgpt_astra_6?.tone || "Realtime Audio Synthesized"}
+                      </span>
                     </div>
-                    <div className="rounded-lg border border-border/80 bg-card/60 p-2 text-muted-foreground">
-                      <strong className="text-foreground block font-bold">Claude Code:</strong>
-                      DICOM-SR Verified
+                    <div className="rounded-lg border border-border/70 bg-background/60 p-2.5">
+                      <strong className="text-foreground block font-bold text-[10px] uppercase font-mono tracking-wider text-muted-foreground mb-0.5">
+                        Claude Code
+                      </strong>
+                      <span className="text-foreground font-medium">DICOM-SR Verified Struct</span>
                     </div>
-                    <div className="rounded-lg border border-border/80 bg-card/60 p-2 text-muted-foreground">
-                      <strong className="text-foreground block font-bold">Canva & Huggsfield:</strong>
-                      Infographic & 3D Video Ready
+                    <div className="rounded-lg border border-border/70 bg-background/60 p-2.5">
+                      <strong className="text-foreground block font-bold text-[10px] uppercase font-mono tracking-wider text-muted-foreground mb-0.5">
+                        Canva & Huggsfield
+                      </strong>
+                      <span className="text-foreground font-medium">Infographic & 3D Video Ready</span>
                     </div>
                   </div>
 
                   <Link
                     href="/omni-ai-studio"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-3.5 py-2 text-xs font-bold text-white shadow-md hover:opacity-95 transition"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3.5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:opacity-95 transition"
                   >
                     <Sparkles size={13} />
                     <span>Launch Omni-AI Studio for This Scan</span>
@@ -1593,13 +1639,15 @@ export function ClassifyPage() {
                   </Link>
                 </div>
               </div>
+
               {/* Class Probability Distribution */}
               {probabilities.length > 0 && (
-                <div className="mt-5 rounded-2xl border border-border bg-card p-5">
-                  <div className="eyebrow mb-3 text-muted-foreground">
-                    Confidence Distribution Across Classes
+                <div className="mt-4 rounded-xl border border-border bg-card p-4">
+                  <div className="eyebrow mb-3 text-muted-foreground flex items-center justify-between font-mono text-[10px]">
+                    <span>Softmax Probability Distribution</span>
+                    <span>4 Classes</span>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {probabilities.map(([label, value], i) => {
                       const pct = (Number(value) * 100).toFixed(1);
                       const isTop = i === 0;
@@ -1608,16 +1656,16 @@ export function ClassifyPage() {
                           <div className="mb-1 flex items-center justify-between text-xs">
                             <span
                               className={`font-semibold capitalize ${
-                                isTop ? 'text-primary' : 'text-foreground'
+                                isTop ? 'text-primary font-bold' : 'text-foreground'
                               }`}
                             >
-                              {label === 'notumor' ? 'No Tumor (Healthy)' : label}
+                              {label === 'notumor' ? 'No Tumor (Healthy Baseline)' : label}
                             </span>
                             <span className={`mono text-xs ${isTop ? 'font-bold text-primary' : 'text-muted-foreground'}`}>
                               {pct}%
                             </span>
                           </div>
-                          <div className="h-2 w-full overflow-hidden rounded-full bg-muted/60">
+                          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                             <div
                               className={`h-full rounded-full transition-all duration-300 ${
                                 isTop ? 'bg-primary' : 'bg-primary/30'
@@ -1633,15 +1681,15 @@ export function ClassifyPage() {
               )}
 
               {/* Stored Status & Actions */}
-              <div className="mt-5 flex items-start gap-3 rounded-xl border border-border bg-muted/20 p-3.5 text-xs text-muted-foreground">
-                <CheckMark />
+              <div className="mt-4 flex items-start gap-3 rounded-xl border border-border bg-muted/20 p-3 text-xs text-muted-foreground">
+                <CheckCircle2 size={15} className="text-secondary shrink-0 mt-0.5" />
                 <div className="min-w-0 flex-1">
                   <span className="font-semibold text-foreground">Inference Logged</span>: Stored as{' '}
-                  <span className="mono text-[11px] text-foreground">{result.prediction_id}</span>
+                  <span className="mono text-[11px] text-foreground font-bold">{result.prediction_id}</span>
                 </div>
               </div>
 
-              <div className="mt-5 flex items-center justify-between">
+              <div className="mt-4 flex items-center justify-between">
                 <Link
                   href="/history"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
@@ -1656,21 +1704,23 @@ export function ClassifyPage() {
               </div>
             </div>
           ) : (
-            <div className="flex min-h-[380px] flex-col items-center justify-center rounded-2xl border border-border bg-muted/20 px-8 text-center">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground">
-                <Gauge size={22} strokeWidth={1.6} />
+            <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card/40 p-8 text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-muted/50 text-muted-foreground shadow-sm">
+                <Gauge size={26} strokeWidth={1.6} />
               </div>
-              <h3 className="font-bold text-foreground">Awaiting Input Scan</h3>
-              <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-muted-foreground">
-                Select a scan from the library above or upload an image to generate neural classification
-                telemetry.
+              <h3 className="font-serif text-base font-bold text-foreground">Diagnostic Telemetry Standby</h3>
+              <p className="mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
+                Load a reference scan from the test library above or upload a patient scan to trigger neural inference and generate real-time quantitative radiomic metrics.
               </p>
+              <div className="mt-6 flex items-center gap-2 rounded-full border border-border/80 bg-background/80 px-3 py-1 text-[10px] font-mono text-muted-foreground">
+                <span className="h-1.5 w-1.5 rounded-full bg-secondary" />
+                <span>EFFICIENTNET-B0 BACKBONE ACTIVE</span>
+              </div>
             </div>
           )}
         </section>
       </div>
-
-      {/* Automated Clinical Care & Medication Alarm Engine */}
+{/* Automated Clinical Care & Medication Alarm Engine */}
       {result && (
         <div className="mt-8">
           <ClinicalCareScheduler

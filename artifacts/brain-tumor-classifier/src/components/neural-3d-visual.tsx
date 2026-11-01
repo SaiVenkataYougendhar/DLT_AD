@@ -300,3 +300,4 @@ export const Neural3DVisual: React.FC<Neural3DVisualProps> = ({
     </div>
   );
 };
+
