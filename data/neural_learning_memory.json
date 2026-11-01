@@ -1,22 +1,101 @@
 {
-  "last_updated": "2026-11-01T11:52:09.910521+00:00",
-  "total_scans_learned": 4,
+  "last_updated": "2026-11-01T16:55:22.899053+00:00",
+  "total_scans_learned": 6,
   "class_counts": {
     "glioma": 0,
-    "meningioma": 4,
-    "notumor": 0,
+    "meningioma": 5,
+    "notumor": 1,
     "pituitary": 0
   },
   "literature_citations_applied": {
-    "european-radiology": 8,
-    "ibsi": 4,
-    "ibsi-docs": 4,
-    "jiim": 4,
-    "ieee-tmi": 4,
-    "cancer-research": 4,
-    "tcia": 4
+    "european-radiology": 11,
+    "ibsi": 6,
+    "ibsi-docs": 6,
+    "jiim": 6,
+    "ieee-tmi": 6,
+    "cancer-research": 6,
+    "tcia": 6,
+    "rsna-radiology-ai": 1
   },
   "recent_events": [
+    {
+      "learning_id": "learn-5e863ee9da67",
+      "timestamp": "2026-11-01T16:55:22.899053+00:00",
+      "scan_name": "colorcoded-mri-perfusion-scan-brain-600nw-2647866703.webp",
+      "predicted_class": "meningioma",
+      "confidence": 0.3712,
+      "cnn_route": "Candidate_Route_A (Invasive Texture Kernels)",
+      "biomarkers": {
+        "glcm_contrast": 3.4161,
+        "homogeneity": 0.7161,
+        "edge_sharpness": 0.084,
+        "energy": 0.1603,
+        "mean_intensity": 0.1776
+      },
+      "literature_rules": [
+        "European Radiology (10.1007/s00330-021-08144-8): Direct pathological alignment with MENINGIOMA \u2014 'Dural tail sign correlates with localized edge sharpness gradient > 0.06 and elevated GLCM correlation in contrast-enhanced T1.'",
+        "European Radiology (10.1007/s00330-021-08144-8): Sharp circumscribed margin matches extra-axial meningioma criteria \u2014 'Dural tail sign correlates with localized edge sharpness gradient > 0.06 and elevated GLCM correlation in contrast-enhanced T1.'",
+        "Image Biomarker Standardisation Initiative (IBSI) (10.1148/radiol.2020191145): Universal radiomics methodology standard \u2014 'Defines exact algorithmic formulas for 174 quantitative imaging features, ensuring zero software discrepancies across packages.'",
+        "Image Biomarker Standardisation Initiative (IBSI) (10.1148/radiol.2020191145): Sharp circumscribed margin matches extra-axial meningioma criteria \u2014 'Defines exact algorithmic formulas for 174 quantitative imaging features, ensuring zero software discrepancies across packages.'",
+        "IBSI Technical Documentation (10.48550/arXiv.1612.07003): Universal radiomics methodology standard \u2014 'Detailed matrix equations for grey level co-occurrence matrices (GLCM), run-length matrices, and spherical discretization.'",
+        "IBSI Technical Documentation (10.48550/arXiv.1612.07003): Sharp circumscribed margin matches extra-axial meningioma criteria \u2014 'Detailed matrix equations for grey level co-occurrence matrices (GLCM), run-length matrices, and spherical discretization.'"
+      ],
+      "learned_summary": "Learned and stored circumscribed extra-axial dural-base pattern: Sobel edge gradient 0.084 > 0.06; GLCM homogeneity 0.72 verified against European Radiology CLEAR checklist.",
+      "soft_voting": {
+        "weights": {
+          "cnn": 0.55,
+          "dnn": 0.35,
+          "literature": 0.1
+        },
+        "consensus_probabilities": {
+          "glioma": 0.2198,
+          "meningioma": 0.5374,
+          "notumor": 0.2097,
+          "pituitary": 0.0332
+        },
+        "final_class": "meningioma",
+        "consensus_confidence": 0.5374
+      }
+    },
+    {
+      "learning_id": "learn-53e0dcbfa284",
+      "timestamp": "2026-11-01T16:54:25.070945+00:00",
+      "scan_name": "images.jpg",
+      "predicted_class": "notumor",
+      "confidence": 0.7384,
+      "cnn_route": "Candidate_Route_A (Invasive Texture Kernels)",
+      "biomarkers": {
+        "glcm_contrast": 1.7229,
+        "homogeneity": 0.7742,
+        "edge_sharpness": 0.0553,
+        "energy": 0.1597,
+        "mean_intensity": 0.2546
+      },
+      "literature_rules": [
+        "Radiology: Artificial Intelligence (10.1148/ryai.2022210045): Direct pathological alignment with NOTUMOR \u2014 'Normal brain parenchyma exhibits baseline homogeneity > 0.70 and low morphological gradient variance across standard 1.5T/3T field strengths.'",
+        "Radiology: Artificial Intelligence (10.1148/ryai.2022210045): High parenchyma homogeneity confirms non-lesional baseline \u2014 'Normal brain parenchyma exhibits baseline homogeneity > 0.70 and low morphological gradient variance across standard 1.5T/3T field strengths.'",
+        "Image Biomarker Standardisation Initiative (IBSI) (10.1148/radiol.2020191145): Universal radiomics methodology standard \u2014 'Defines exact algorithmic formulas for 174 quantitative imaging features, ensuring zero software discrepancies across packages.'",
+        "Image Biomarker Standardisation Initiative (IBSI) (10.1148/radiol.2020191145): High parenchyma homogeneity confirms non-lesional baseline \u2014 'Defines exact algorithmic formulas for 174 quantitative imaging features, ensuring zero software discrepancies across packages.'",
+        "IBSI Technical Documentation (10.48550/arXiv.1612.07003): Universal radiomics methodology standard \u2014 'Detailed matrix equations for grey level co-occurrence matrices (GLCM), run-length matrices, and spherical discretization.'",
+        "IBSI Technical Documentation (10.48550/arXiv.1612.07003): High parenchyma homogeneity confirms non-lesional baseline \u2014 'Detailed matrix equations for grey level co-occurrence matrices (GLCM), run-length matrices, and spherical discretization.'"
+      ],
+      "learned_summary": "Learned and stored normal cranial parenchyma baseline: high homogeneity 0.77 > 0.70 conforms to IBSI non-lesional reference standard.",
+      "soft_voting": {
+        "weights": {
+          "cnn": 0.55,
+          "dnn": 0.35,
+          "literature": 0.1
+        },
+        "consensus_probabilities": {
+          "glioma": 0.0477,
+          "meningioma": 0.0378,
+          "notumor": 0.7944,
+          "pituitary": 0.1201
+        },
+        "final_class": "notumor",
+        "consensus_confidence": 0.7944
+      }
+    },
     {
       "learning_id": "learn-de64503b6775",
       "timestamp": "2026-11-01T11:52:09.910521+00:00",
