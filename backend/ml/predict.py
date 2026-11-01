@@ -22,6 +22,7 @@ try:
         normalize_mri_contrast,
         extract_radiomic_features,
         fuse_radiomics_and_deep_learning,
+        validate_cranial_mri_scan,
     )
 except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -30,6 +31,7 @@ except ImportError:
         normalize_mri_contrast,
         extract_radiomic_features,
         fuse_radiomics_and_deep_learning,
+        validate_cranial_mri_scan,
     )
 
 IMAGE_SIZE = (224, 224)
@@ -50,6 +52,38 @@ def main() -> None:
 
     # 1. Springer-Standard Preprocessing
     orig_image = Image.open(image_path).convert("RGB")
+
+    # Quality Control Gate: Cranial MRI Out-Of-Distribution (OOD) Validator
+    is_valid, validation_msg, qc_metrics = validate_cranial_mri_scan(orig_image)
+    if not is_valid:
+        unrelated_result = {
+            "is_valid_scan": False,
+            "predicted_class": "unrelated_scan",
+            "prediction": "unrelated_scan",
+            "confidence": 0.0,
+            "status": "unrelated_scan",
+            "validation_message": validation_msg,
+            "error_message": "Image is not a related Brain MRI Scan",
+            "clinical_rationale": f"QUALITY CONTROL ALERT: {validation_msg} The uploaded file was rejected by the clinical validation gate because it does not match cranial Magnetic Resonance Imaging (MRI) characteristics.",
+            "model_version": "EfficientNetB0-DeepLearning-Radiomics-v2.0",
+            "probabilities": {c: 0.0 for c in class_names},
+            "raw_probabilities": {},
+            "radiomics": {"first_order": {}, "texture_glcm": {}, "morphological": {}},
+            "treatment_planning": {
+                "resectability_score": 0.0,
+                "resectability_grade": "Not Applicable (Unrelated Image)",
+                "radiation_sensitivity_index": 0.0,
+                "chemo_response_index": 0.0,
+                "edema_mass_effect_index": 0.0,
+                "treatment_pathway": "No medical evaluation available: Uploaded file is not a valid Brain MRI scan.",
+                "risk_tier": "Invalid Input",
+            },
+            "radar_profile": [],
+            "qc_metrics": qc_metrics,
+        }
+        print(json.dumps(unrelated_result))
+        return
+
     cropped_image = crop_brain_contour(orig_image)
     norm_image = normalize_mri_contrast(cropped_image)
     resized = norm_image.resize(IMAGE_SIZE)

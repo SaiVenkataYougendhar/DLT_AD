@@ -1292,8 +1292,19 @@ export function ClassifyPage() {
                 {/* Viewport Top Overlay Bar */}
                 <div className="absolute left-4 right-4 top-4 flex items-center justify-between rounded-xl bg-black/80 px-3.5 py-2 backdrop-blur border border-white/10 text-white text-xs">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
+                    <span
+                      className={`h-2 w-2 rounded-full ${
+                        result?.predicted_class === 'unrelated_scan'
+                          ? 'bg-rose-500 animate-ping'
+                          : 'bg-secondary animate-pulse'
+                      }`}
+                    />
                     <span className="mono truncate text-[11px] font-bold text-white/95">{file?.name}</span>
+                    {result?.predicted_class === 'unrelated_scan' && (
+                      <span className="rounded bg-rose-500/30 border border-rose-500/50 px-2 py-0.5 text-[9px] font-mono text-rose-300 font-bold uppercase">
+                        Non-MRI Graphic
+                      </span>
+                    )}
                   </div>
                   <button
                     type="button"
@@ -1452,7 +1463,7 @@ export function ClassifyPage() {
               </div>
 
               {/* Heatmap Saliency Slider */}
-              {result && (
+              {result && result.predicted_class !== 'unrelated_scan' && (
                 <div className="mt-3.5 rounded-lg border border-amber-500/25 bg-amber-500/5 p-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -1504,10 +1515,12 @@ export function ClassifyPage() {
 
             {result ? (
               <div className="flex items-center gap-2">
-                <Button onClick={() => setShowReportModal(true)} variant="secondary">
-                  <FileText size={13} />
-                  Export Report
-                </Button>
+                {result.predicted_class !== 'unrelated_scan' && (
+                  <Button onClick={() => setShowReportModal(true)} variant="secondary">
+                    <FileText size={13} />
+                    Export Report
+                  </Button>
+                )}
                 <Button onClick={reset} variant="sapphire-subtle" testId="button-analyze-another">
                   <RefreshCw size={13} />
                   Analyze Another
@@ -1558,6 +1571,91 @@ export function ClassifyPage() {
               <p className="mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
                 Passing preprocessed 224x224 RGB tensor through 16 convolutional blocks of EfficientNetB0.
               </p>
+            </div>
+          ) : result?.predicted_class === 'unrelated_scan' || result?.is_valid_scan === false ? (
+            <div className="animate-rise space-y-4">
+              {/* IMAGE NOT RELATED TO SCAN ALERT CARD */}
+              <div className="rounded-2xl border-2 border-rose-500/50 bg-gradient-to-b from-rose-500/15 via-card to-card p-6 shadow-xl">
+                <div className="flex items-center justify-between">
+                  <div className="eyebrow flex items-center gap-1.5 text-rose-500 font-mono uppercase text-xs font-bold">
+                    <CircleAlert size={15} className="text-rose-500 animate-pulse" />
+                    <span>Quality Control Gate Alert</span>
+                  </div>
+                  <span className="rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/40 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider font-mono">
+                    Input Rejected
+                  </span>
+                </div>
+
+                <div className="mt-4">
+                  <h2 className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-rose-600 dark:text-rose-400 uppercase">
+                    IMAGE NOT RELATED TO SCAN
+                  </h2>
+                  <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                    The uploaded image does not meet the radiological criteria of a cranial Brain Magnetic Resonance Imaging (MRI) scan. Diagnostic inference, automated tumor classification, and treatment pathways have been halted.
+                  </p>
+                </div>
+
+                {/* Validation Detail Box */}
+                <div className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs">
+                  <div className="font-mono text-[10px] uppercase font-bold text-rose-500 mb-1 flex items-center gap-1.5">
+                    <Info size={13} />
+                    <span>Clinical Validation Audit Message</span>
+                  </div>
+                  <p className="font-semibold text-rose-950 dark:text-rose-200 leading-relaxed">
+                    {result.validation_message || result.error_message || "Non-medical graphic, document, flowchart, or diagram detected."}
+                  </p>
+                </div>
+
+                {/* Telemetry Summary */}
+                <div className="mt-4 grid grid-cols-2 gap-3 border-t border-border/60 pt-4">
+                  <div className="rounded-xl border border-border/70 bg-card/80 p-3">
+                    <div className="eyebrow text-muted-foreground font-mono uppercase text-[10px]">Confidence Level</div>
+                    <div className="mono mt-1 text-2xl font-black text-rose-500">
+                      0.0%
+                    </div>
+                    <div className="text-[10px] text-muted-foreground mt-0.5">Inference Nullified</div>
+                  </div>
+                  <div className="rounded-xl border border-border/70 bg-card/80 p-3">
+                    <div className="eyebrow text-muted-foreground font-mono uppercase text-[10px]">Quality Gate Status</div>
+                    <div className="mono mt-1 text-xs font-bold text-foreground">
+                      Rejected (OOD)
+                    </div>
+                    <div className="text-[10px] text-rose-500 font-semibold mt-0.5">Non-Cranial Graphic</div>
+                  </div>
+                </div>
+
+                {/* Acceptable scans guidance */}
+                <div className="mt-4 rounded-xl border border-border/80 bg-muted/40 p-3.5 space-y-2 text-xs">
+                  <div className="font-mono text-[10px] uppercase font-bold text-muted-foreground">
+                    Radiological Scanning Requirements:
+                  </div>
+                  <ul className="space-y-1.5 text-[11px]">
+                    <li className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 size={13} className="shrink-0" />
+                      <span>Axial, Coronal, or Sagittal Cranial Brain MRI</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 size={13} className="shrink-0" />
+                      <span>T1, T2, FLAIR, or T1-CE Contrast Grayscale Sequence</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-rose-600 dark:text-rose-400">
+                      <X size={13} className="shrink-0" />
+                      <span>No flowcharts, architectural diagrams, text documents, or non-medical photos</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="mt-5 flex gap-2">
+                  <Button
+                    onClick={reset}
+                    variant="sapphire"
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <RefreshCw size={14} />
+                    <span>Upload Valid Cranial Brain MRI Scan</span>
+                  </Button>
+                </div>
+              </div>
             </div>
           ) : result ? (
             <div className="animate-rise space-y-4">
@@ -1759,7 +1857,7 @@ export function ClassifyPage() {
         </section>
       </div>
 {/* Automated Clinical Care & Medication Alarm Engine */}
-      {result && (
+      {result && result.predicted_class !== 'unrelated_scan' && result.is_valid_scan !== false && (
         <div className="mt-8">
           <ClinicalCareScheduler
             diagnosis={result.predicted_class}

@@ -36,6 +36,7 @@ from backend.ml.radiomics import (
     normalize_mri_contrast,
     extract_radiomic_features,
     fuse_radiomics_and_deep_learning,
+    validate_cranial_mri_scan,
 )
 from backend.ml.neural_networking import (
     PEER_REVIEWED_SOURCES,
@@ -175,6 +176,36 @@ def run_inference_and_radiomics(image_bytes: bytes, filename: str) -> dict[str, 
 
     # 1. Springer-Standard Preprocessing: Brain Contour Extraction & Adaptive Contrast
     orig_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+
+    # 0. Quality Control Gate: Cranial MRI Out-Of-Distribution (OOD) Validator
+    is_valid, validation_msg, qc_metrics = validate_cranial_mri_scan(orig_image)
+    if not is_valid:
+        return {
+            "is_valid_scan": False,
+            "predicted_class": "unrelated_scan",
+            "prediction": "unrelated_scan",
+            "confidence": 0.0,
+            "status": "unrelated_scan",
+            "validation_message": validation_msg,
+            "error_message": "Image is not a related Brain MRI Scan",
+            "clinical_rationale": f"QUALITY CONTROL ALERT: {validation_msg} The uploaded file was rejected by the clinical validation gate because it does not match cranial Magnetic Resonance Imaging (MRI) characteristics.",
+            "model_version": "EfficientNetB0-DeepLearning-Radiomics-v2.0",
+            "probabilities": {c: 0.0 for c in class_names},
+            "raw_probabilities": {},
+            "radiomics": {"first_order": {}, "texture_glcm": {}, "morphological": {}},
+            "treatment_planning": {
+                "resectability_score": 0.0,
+                "resectability_grade": "Not Applicable (Unrelated Image)",
+                "radiation_sensitivity_index": 0.0,
+                "chemo_response_index": 0.0,
+                "edema_mass_effect_index": 0.0,
+                "treatment_pathway": "No medical evaluation available: Uploaded file is not a valid Brain MRI scan.",
+                "risk_tier": "Invalid Input",
+            },
+            "radar_profile": [],
+            "qc_metrics": qc_metrics,
+        }
+
     cropped_image = crop_brain_contour(orig_image)
     norm_image = normalize_mri_contrast(cropped_image)
     resized = norm_image.resize(IMAGE_SIZE)
@@ -232,6 +263,7 @@ def run_inference_and_radiomics(image_bytes: bytes, filename: str) -> dict[str, 
                 pass
 
     return {
+        "is_valid_scan": True,
         "predicted_class": predicted_label,
         "confidence": float(confidence),
         "probabilities": calibrated_probs,
@@ -379,6 +411,9 @@ async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
 
     prediction: dict[str, Any] = {
         "success": True,
+        "is_valid_scan": result.get("is_valid_scan", True),
+        "validation_message": result.get("validation_message", ""),
+        "error_message": result.get("error_message", ""),
         "prediction_id": pred_id,
         "predicted_class": result["predicted_class"],
         "prediction": result["predicted_class"],
@@ -394,6 +429,45 @@ async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
         "image_data_url": data_url if len(content) < 500000 else None,
         "model_version": result["model_version"],
     }
+
+    if not result.get("is_valid_scan", True):
+        try:
+            conn = sqlite3.connect(SQLITE_PATH)
+            cur = conn.cursor()
+            cur.execute(
+                """
+                INSERT INTO predictions 
+                (prediction_id, predicted_class, confidence, timestamp, image_filename, model_version, image_data_url, radiomics_json, treatment_planning_json, radar_profile_json)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    pred_id,
+                    "unrelated_scan",
+                    0.0,
+                    iso_time,
+                    file.filename or "uploaded-file.jpg",
+                    result["model_version"],
+                    data_url if len(content) < 500000 else None,
+                    json.dumps(result["radiomics"]),
+                    json.dumps(result["treatment_planning"]),
+                    json.dumps(result["radar_profile"]),
+                ),
+            )
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            print("SQLite insert error:", e)
+
+        prediction["neural_networking"] = {
+            "literature_matches": [],
+            "soft_voting": {},
+            "learning_event": None,
+        }
+        prediction["omni_ai"] = {
+            "summary": "Clinical consultation halted: Uploaded file was rejected by the MRI validation filter.",
+            "opinions": []
+        }
+        return prediction
 
     # 5. Dual-Branch Neural Network & Multi-Source Peer-Reviewed Knowledge Synthesis
     global _latest_neural_state
