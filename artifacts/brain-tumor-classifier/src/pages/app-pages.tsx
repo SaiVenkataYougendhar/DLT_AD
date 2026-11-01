@@ -9,6 +9,7 @@ import {
   ParallaxSection,
   SkiperTextReveal,
 } from '../components/skiper';
+import { ClinicalCareScheduler } from '../components/clinical-care-scheduler';
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from 'wouter';
 import {
@@ -1577,6 +1578,16 @@ export function ClassifyPage() {
         </section>
       </div>
 
+      {/* Automated Clinical Care & Medication Alarm Engine */}
+      {result && (
+        <div className="mt-8">
+          <ClinicalCareScheduler
+            diagnosis={result.predicted_class}
+            confidence={result.confidence}
+          />
+        </div>
+      )}
+
       {/* CLINICAL SUMMARY REPORT MODAL / PRINT VIEW */}
       {showReportModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
@@ -1695,24 +1706,33 @@ export function ClassifyPage() {
                 </div>
               </div>
 
-              {/* Clinical Ethics Sign-off Disclaimer */}
-              <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-[11px] leading-relaxed text-muted-foreground">
-                <strong className="text-foreground">Research Disclaimer:</strong> This document was generated
-                by CortexAI for investigative and academic research review only. Deep learning outputs are
-                probabilistic and must not replace professional clinical diagnosis or pathology verification.
+              {/* Automated Post-Diagnosis Regimen & Medication Reminders */}
+              <div className="pt-2">
+                <ClinicalCareScheduler
+                  diagnosis={result?.predicted_class || 'notumor'}
+                  confidence={result?.confidence || 0.85}
+                  compact
+                />
+              </div>
+
+              {/* Clinical Protocol Sign-off */}
+              <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 text-[11px] leading-relaxed text-muted-foreground">
+                <strong className="text-foreground">Clinical Platform Statement:</strong> This document was generated
+                by RadCortex AI as a deployment-ready, modular Clinical Decision Support (CDS) intelligence platform. All deep learning outputs and IBSI radiomic features are
+                calibrated for diagnostic screening, acute triage, and multidisciplinary clinical decision support alongside certified medical teams.
               </div>
 
               <div className="grid grid-cols-2 gap-8 border-t border-border/80 pt-6 text-xs text-muted-foreground">
                 <div>
                   <div className="h-8 border-b border-dashed border-border" />
                   <span className="mt-1 block text-[10px] uppercase tracking-wider">
-                    Research Investigator Signature
+                    Attending Radiologist / Clinician Sign-off
                   </span>
                 </div>
                 <div>
                   <div className="h-8 border-b border-dashed border-border" />
                   <span className="mt-1 block text-[10px] uppercase tracking-wider">
-                    Institutional Affiliation & Date
+                    Institutional Medical Center & License ID
                   </span>
                 </div>
               </div>

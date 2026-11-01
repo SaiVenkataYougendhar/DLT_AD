@@ -331,7 +331,8 @@ const guideTerms: TermItem[] = [
           <li>Primary neural prediction with full confidence breakdown.</li>
           <li>Quantitative radiomics table with 15+ IBSI-standardized biomarkers.</li>
           <li>Prognostic surgical and radiation treatment recommendations.</li>
-          <li>Attending clinician signature lines and research compliance disclaimers.</li>
+          <li>Automated post-diagnosis medication & supportive care regimen with real-time audio/voice alarms.</li>
+          <li>Attending clinician signature lines and Clinical Decision Support (CDS) platform statements.</li>
         </ul>
       </div>
     ),
