@@ -32,6 +32,8 @@ export interface CareReminder {
   dosageOrAction: string;
   time24h: string; // Format: "HH:MM"
   clinicalRationale: string;
+  cautionAlert?: string;
+  circadianSlot?: 'Morning' | 'Mid-Day' | 'Evening' | 'Night';
   enabled: boolean;
   takenToday: boolean;
 }
@@ -43,36 +45,46 @@ const DEFAULT_PROTOCOLS: Record<DiagnosisClass, Omit<CareReminder, 'id' | 'enabl
       category: 'medication',
       dosageOrAction: 'Dexamethasone 4mg (Take with food / gastric protector)',
       time24h: '08:00',
+      circadianSlot: 'Morning',
+      cautionAlert: '⚠️ Co-prescribe Omeprazole 20mg for gastric mucosal cytoprotection; monitor blood glucose daily.',
       clinicalRationale: 'Reduces peritumoral vasogenic edema and controls intracranial pressure.',
+    },
+    {
+      title: 'Mid-Day Neurological & Headache Self-Check',
+      category: 'monitoring',
+      dosageOrAction: 'Log headache score (1-10), speech fluency, and limb motor strength',
+      time24h: '14:00',
+      circadianSlot: 'Mid-Day',
+      cautionAlert: '⚠️ Sudden explosive headache or projectile vomiting requires immediate emergency triage.',
+      clinicalRationale: 'Early warning surveillance for acute midline shift or worsening mass effect.',
     },
     {
       title: 'Seizure Prophylaxis Protocol (Rx Verified)',
       category: 'medication',
       dosageOrAction: 'Levetiracetam 500mg BID (or prescribed anticonvulsant)',
       time24h: '20:00',
+      circadianSlot: 'Night',
+      cautionAlert: '⚠️ Do not abruptly discontinue; maintain strict 12-hour dosing interval to prevent breakthrough seizures.',
       clinicalRationale: 'Mitigates cortical irritation and focal/generalized seizure risks in glial pathology.',
-    },
-    {
-      title: 'Neurological & Headache Self-Check',
-      category: 'monitoring',
-      dosageOrAction: 'Log headache score (1-10), speech fluency, and limb motor strength',
-      time24h: '14:00',
-      clinicalRationale: 'Early warning surveillance for acute midline shift or worsening mass effect.',
     },
   ],
   meningioma: [
     {
-      title: 'Symptomatic Pain & Edema Protocol (Rx Verified)',
+      title: 'Symptomatic Dural & Pain Regimen (Rx Verified)',
       category: 'medication',
-      dosageOrAction: 'Prescribed anti-inflammatory & neuro-supportive regimen',
+      dosageOrAction: 'Prescribed neuro-analgesic & anti-inflammatory regimen',
       time24h: '09:00',
-      clinicalRationale: 'Controls dural irritation and localized perilesional discomfort.',
+      circadianSlot: 'Morning',
+      cautionAlert: '⚠️ Take with water; monitor blood pressure and renal function during prolonged therapy.',
+      clinicalRationale: 'Controls dural tail irritation and localized perilesional bone discomfort.',
     },
     {
       title: 'Cranial Nerve & Visual Field Screen',
       category: 'monitoring',
       dosageOrAction: 'Test bilateral peripheral vision clarity and check for diplopia (double vision)',
       time24h: '18:00',
+      circadianSlot: 'Evening',
+      cautionAlert: '⚠️ New-onset blurriness or visual field constriction indicates cavernous/optic compression.',
       clinicalRationale: 'Monitors adjacent optic nerve and cavernous sinus compression signs.',
     },
   ],
@@ -82,13 +94,17 @@ const DEFAULT_PROTOCOLS: Record<DiagnosisClass, Omit<CareReminder, 'id' | 'enabl
       category: 'medication',
       dosageOrAction: 'Hormone replacement / Cabergoline per Endocrinology protocol',
       time24h: '07:30',
-      clinicalRationale: 'Morning administration aligns with physiological hypothalamic-pituitary rhythms.',
+      circadianSlot: 'Morning',
+      cautionAlert: '⚠️ Annual transthoracic echocardiogram recommended for long-term dopaminergic therapy.',
+      clinicalRationale: 'Morning administration aligns with physiological hypothalamic-pituitary circadian rhythms.',
     },
     {
       title: 'Fluid Balance & Bitemporal Field Log',
       category: 'monitoring',
       dosageOrAction: 'Log 24h water intake/urinary output & check peripheral sight boundaries',
       time24h: '19:30',
+      circadianSlot: 'Evening',
+      cautionAlert: '⚠️ Excessive thirst (>3L/day) or polyuria warrants urgent serum osmolality evaluation.',
       clinicalRationale: 'Screens for optic chiasm pressure and subclinical diabetes insipidus.',
     },
   ],
@@ -98,6 +114,8 @@ const DEFAULT_PROTOCOLS: Record<DiagnosisClass, Omit<CareReminder, 'id' | 'enabl
       category: 'monitoring',
       dosageOrAction: '500ml water intake + 15-minute screen rest',
       time24h: '11:00',
+      circadianSlot: 'Morning',
+      cautionAlert: '💡 Maintain ergonomic posture and adequate ambient lighting to mitigate tension cephalalgia.',
       clinicalRationale: 'Prevents tension headache triggers when intracranial mass lesion is excluded.',
     },
     {
@@ -105,6 +123,8 @@ const DEFAULT_PROTOCOLS: Record<DiagnosisClass, Omit<CareReminder, 'id' | 'enabl
       category: 'consultation',
       dosageOrAction: 'Log resting blood pressure and ensure 7-8 hours sleep window',
       time24h: '21:30',
+      circadianSlot: 'Night',
+      cautionAlert: '💡 Regular aerobic exercise and consistent sleep schedules optimize cerebral blood flow.',
       clinicalRationale: 'Reinforces secondary prevention for non-structural cranial symptoms.',
     },
   ],
@@ -146,6 +166,8 @@ export const ClinicalCareScheduler: React.FC<ClinicalCareSchedulerProps> = ({
   const [notificationPermission, setNotificationPermission] = useState<string>(
     typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'default'
   );
+  const [showEmergencyModal, setShowEmergencyModal] = useState(false);
+  const [circadianFilter, setCircadianFilter] = useState<'All' | 'Morning' | 'Mid-Day' | 'Evening' | 'Night'>('All');
 
   const lastTriggeredMinuteRef = useRef<string>('');
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -428,8 +450,56 @@ export const ClinicalCareScheduler: React.FC<ClinicalCareSchedulerProps> = ({
             title="Export repeating daily alarm schedule to Apple, Google or Outlook Calendar"
           >
             <Download size={13} className="text-emerald-500" />
-            <span>Sync to Phone (.ics)</span>
+            <span>Sync to Calendar (.ics)</span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setShowEmergencyModal(true)}
+            className="metallic-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono border border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition cursor-pointer"
+            title="Open Emergency Acute ICP Countermeasures"
+          >
+            <ShieldAlert size={13} className="text-rose-500 animate-pulse" />
+            <span>Acute ICP Protocol</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Real-Time Medication Adherence Tracker & Circadian Streak */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-xl border border-primary/25 bg-primary/5">
+        <div>
+          <div className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+            <Flame size={12} className="text-amber-500" />
+            <span>Adherence Streak</span>
+          </div>
+          <div className="mono text-base font-black text-foreground mt-0.5">
+            7-Day Protocol Streak 🔥
+          </div>
+        </div>
+
+        <div className="sm:col-span-2 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-[11px] font-mono">
+            <span className="text-muted-foreground">Daily Dose Progress:</span>
+            <span className="font-bold text-primary">
+              {reminders.filter(r => r.takenToday).length} of {reminders.filter(r => r.enabled).length} Administered ({
+                reminders.filter(r => r.enabled).length > 0
+                  ? Math.round((reminders.filter(r => r.takenToday).length / reminders.filter(r => r.enabled).length) * 100)
+                  : 100
+              }%)
+            </span>
+          </div>
+          <div className="mt-2 h-2 w-full rounded-full bg-muted overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-primary to-secondary transition-all duration-300"
+              style={{
+                width: `${
+                  reminders.filter(r => r.enabled).length > 0
+                    ? Math.round((reminders.filter(r => r.takenToday).length / reminders.filter(r => r.enabled).length) * 100)
+                    : 100
+                }%`
+              }}
+            />
+          </div>
         </div>
       </div>
 
@@ -706,6 +776,61 @@ export const ClinicalCareScheduler: React.FC<ClinicalCareSchedulerProps> = ({
           <Plus size={13} /> Add Alarm
         </button>
       </form>
+      {/* EMERGENCY ACUTE ICP COUNTERMEASURES MODAL */}
+      {showEmergencyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
+          <div className="panel max-w-lg w-full p-6 md:p-8 bg-card border-rose-500/50 shadow-2xl rounded-3xl space-y-5">
+            <div className="flex items-center justify-between border-b border-border/80 pb-3">
+              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-mono font-bold text-sm">
+                <ShieldAlert size={18} className="animate-pulse" />
+                <span>EMERGENCY CLINICAL PROTOCOL // ACUTE ICP</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowEmergencyModal(false)}
+                className="rounded-lg p-1 text-muted-foreground hover:text-foreground transition"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs leading-relaxed text-muted-foreground">
+              <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 text-foreground">
+                <strong className="block font-bold text-rose-600 dark:text-rose-400 mb-1">
+                  Immediate Red-Flag Symptoms:
+                </strong>
+                • Explosive morning headache with projectile emesis (vomiting)<br />
+                • Acute pupillary asymmetry (anisocoria) or sluggish light reflex<br />
+                • Progressive somnolence, Glasgow Coma Scale (GCS) drop &ge; 2 points
+              </div>
+
+              <div className="space-y-2">
+                <strong className="block font-bold text-foreground">Standardized Hospital Countermeasures:</strong>
+                <p>1. <b>Positioning:</b> Elevate head of bed to 30° to promote cranial venous drainage.</p>
+                <p>2. <b>Osmotherapy:</b> Administer Mannitol 20% (1.0 g/kg IV over 20 min) or 3% Hypertonic Saline.</p>
+                <p>3. <b>Corticosteroid:</b> High-dose Dexamethasone 10mg IV bolus followed by 4mg Q6H.</p>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center justify-between gap-3">
+              <a
+                href="tel:999"
+                className="metallic-button flex-1 py-2.5 rounded-xl bg-rose-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-rose-600/30"
+              >
+                <HeartPulse size={14} />
+                <span>Call Emergency Services (999 / 911)</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setShowEmergencyModal(false)}
+                className="px-4 py-2.5 rounded-xl border border-border text-xs font-semibold hover:bg-muted"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

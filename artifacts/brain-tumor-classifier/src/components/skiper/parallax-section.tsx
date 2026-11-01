@@ -71,18 +71,17 @@ export const ParallaxSection: React.FC<ParallaxSectionProps> = ({
           children
         ) : (
           <motion.div style={{ y: cardY }} className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/20 text-blue-400 border border-blue-500/30">
-              <Sparkles size={13} />
-              <span>Depth-Calibrated Feature Engine</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-primary/20 text-accent border border-accent/30">
+              <Sparkles size={13} className="text-accent" />
+              <span>SPATIAL DEPTH MATRIX // THREE-DIMENSIONAL PROJECTION</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white">
-              Mathematical Phenotypes In Every Voxel
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-serif tracking-tight text-white">
+              Volumetric Tumor Heterogeneity & Z-Axis Layering
             </h2>
 
             <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 leading-relaxed">
-              Moving beyond surface impressions: our IBSI radiomics pipeline calculates second-order spatial gray-level
-              dependencies, quantifying microvascular density, cellular necrosis, and margin infiltration across 3D scan volumes.
+              Differential multi-layer z-axis parallax mapping reveals micro-architectural tissue density, necrotic tumor cores, and invasive cellular perimeters at sub-millimeter precision. Moving beyond surface impressions to quantify spatial gray-level dependencies.
             </p>
 
             <div className="pt-4 flex flex-wrap items-center justify-center gap-4">

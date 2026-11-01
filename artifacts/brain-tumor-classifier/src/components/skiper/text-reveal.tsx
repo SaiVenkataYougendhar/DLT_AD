@@ -63,14 +63,14 @@ export const SkiperTextReveal: React.FC<SkiperTextRevealProps> = ({
     >
       <div className="flex flex-col justify-center">
         {eyebrow && (
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 w-fit">
-            <Sparkles size={13} />
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-mono font-bold uppercase tracking-wider text-primary w-fit">
+            <Sparkles size={13} className="text-accent" />
             <span>{eyebrow}</span>
           </div>
         )}
 
         <div className="max-w-5xl">
-          <p className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.15] text-slate-900 dark:text-white">
+          <p className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.18] tracking-tight text-foreground">
             {words.map((word, i) => (
               <Word
                 key={i}
@@ -83,9 +83,14 @@ export const SkiperTextReveal: React.FC<SkiperTextRevealProps> = ({
           </p>
         </div>
 
-        <div className="mt-8 flex items-center gap-3 text-xs font-mono text-slate-400">
-          <ArrowDown size={14} className="text-blue-500 animate-bounce" />
-          <span>CONTINUE SCROLLING FOR RADIOMICS MODALITIES</span>
+        <div className="mt-8 pt-6 border-t border-border/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-5xl">
+          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed max-w-2xl">
+            Bridging human clinical perception with mathematical reproducibility — moving medical oncology from qualitative subjective reads to quantified, audit-compliant digital biomarkers.
+          </p>
+          <div className="flex items-center gap-2 text-xs font-mono text-primary font-bold shrink-0">
+            <ArrowDown size={14} className="text-accent animate-bounce" />
+            <span>CONTINUE SCROLLING FOR ROTATIONAL RETICLE HORIZON</span>
+          </div>
         </div>
       </div>
     </div>

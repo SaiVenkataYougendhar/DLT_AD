@@ -106,29 +106,32 @@ export const Skiper54Carousel: React.FC<Skiper54CarouselProps> = ({
     <div className={`relative w-full overflow-hidden py-10 ${className}`}>
       {/* Top Header */}
       <div className="flex flex-col items-center justify-between gap-4 md:flex-row mb-8 px-4 max-w-7xl mx-auto">
-        <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-2">
-            <Sparkles size={13} />
-            <span>Multi-Modal Clinical Library</span>
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/25 mb-2.5">
+            <Sparkles size={13} className="text-accent" />
+            <span>STANDARDIZED COHORT GALLERY // VERIFIED PATHOLOGICAL ARCHIVE</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white">
-            Curated Pathological Modalities Carousel
+          <h2 className="text-2xl md:text-4xl font-black font-serif tracking-tight text-foreground">
+            Multi-Modal Clinical Imaging Repository
           </h2>
+          <p className="mt-2.5 text-xs md:text-sm text-muted-foreground leading-relaxed">
+            Curated high-resolution axial, coronal, and sagittal cross-sections across cranial, pulmonary, hepato-biliary, and pelvic oncology cohorts with verified histopathological ground truth.
+          </p>
         </div>
 
         {/* Navigation Arrows */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={scrollPrev}
             aria-label="Previous Slide"
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 shadow-sm transition hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/80 bg-card/80 text-foreground shadow-sm transition hover:bg-muted active:scale-95"
           >
             <ChevronLeft size={18} />
           </button>
           <button
             onClick={scrollNext}
             aria-label="Next Slide"
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 shadow-sm transition hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/80 bg-card/80 text-foreground shadow-sm transition hover:bg-muted active:scale-95"
           >
             <ChevronRight size={18} />
           </button>

@@ -8,6 +8,7 @@ import {
   Skiper54Carousel,
   ParallaxSection,
   SkiperTextReveal,
+  GsapRadiomicRibbon,
 } from '../components/skiper';
 import { ClinicalCareScheduler } from '../components/clinical-care-scheduler';
 import { useMemo, useState, useRef, useEffect } from 'react';
@@ -29,6 +30,7 @@ import {
   FileText,
   Flame,
   FlaskConical,
+  HeartPulse,
   Gauge,
   Info,
   Layers3,
@@ -342,10 +344,9 @@ export function LandingPage() {
           <div className="relative z-10 grid gap-12 lg:grid-cols-[1.15fr_.85fr] items-center">
             <div>
               <div className="mb-4 flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/10 px-3.5 py-1 text-xs font-bold text-blue-600 dark:text-blue-400">
-                  <Sparkles size={13} />
-                  <span>Next-Gen Medical Decision Support</span>
-                  <span className="mono text-[10px] opacity-70">· IBSI Validated</span>
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-mono font-bold uppercase tracking-wider text-primary">
+                  <Sparkles size={13} className="text-accent" />
+                  <span>HARLEY STREET CLINICAL STANDARD // MULTI-PARAMETRIC NEURORADIOLOGY</span>
                 </div>
                 <button
                   type="button"
@@ -385,10 +386,10 @@ export function LandingPage() {
                 </button>
               </div>
 
-              <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-foreground sm:text-5xl md:text-6xl">
-                Deep Learning With <span className="bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">Radiomics</span>
+              <h1 className="text-4xl font-extrabold font-serif leading-[1.12] tracking-tight text-foreground sm:text-5xl md:text-6xl">
+                Deep Learning With <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent italic font-serif">Quantitative Radiomics</span>
                 <br />
-                For Disease Diagnosis & Treatment.
+                For Precision Neuro-Oncology.
               </h1>
 
               <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
@@ -506,17 +507,22 @@ export function LandingPage() {
           </div>
         </section>
 
-        {/* 2. Skiper54 Carousel: Pathological Modalities Carousel */}
+        {/* 2. Standardized Cohort Gallery (Multi-Modal Clinical Library) */}
         <section className="border-t border-border/80 bg-muted/10 py-12">
           <div className="mx-auto max-w-7xl px-4 md:px-12">
             <Skiper54Carousel />
           </div>
         </section>
 
-        {/* 3. Skiper72 Kinetic Text Reveal: Core Clinical Manifesto */}
+        {/* 3. NEW: GSAP ScrollTrigger Kinetic Waveform Ribbon */}
+        <section className="border-t border-border/80">
+          <GsapRadiomicRibbon />
+        </section>
+
+        {/* 4. Clinical Core Manifesto */}
         <section className="border-t border-border/80 bg-background">
           <SkiperTextReveal
-            eyebrow="Clinical Core Manifesto"
+            eyebrow="CLINICAL METHODOLOGY CHARTER // OBJECTIVE QUANTIFICATION"
           >
             From Raw Medical Pixels To Objective Biological Signals — We Transform Visual Interpretation Into Reproducible Mathematical Biomarkers And Precision Treatment Pathways.
           </SkiperTextReveal>
@@ -535,14 +541,17 @@ export function LandingPage() {
         {/* 6. Multi-Organ Modality Grid with Skiper42 Animated Organ Icons */}
         <section className="border-t border-border/80 bg-muted/10 py-20">
           <div className="mx-auto max-w-7xl px-6 md:px-12">
-            <div className="max-w-2xl mb-12">
-              <div className="eyebrow text-blue-600 dark:text-blue-400 mb-2">Universal Modalities</div>
-              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-                Comprehensive Radiomics Across All Anatomical Domains
+            <div className="max-w-3xl mb-12">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3">
+                <Sparkles size={13} className="text-accent" />
+                <span>PAN-ANATOMICAL MODALITIES // MULTI-SYSTEM RADIOMICS</span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black font-serif tracking-tight text-foreground">
+                Quantitative Biomarkers Across Five Physiological Domains
               </h2>
-              <p className="mt-3 text-sm md:text-base text-muted-foreground">
-                Our architecture extends beyond neural tissue to evaluate tumor heterogeneity, nodular spiculation,
-                and margin kinetics across all clinical oncology domains.
+              <p className="mt-3.5 text-sm md:text-base leading-relaxed text-muted-foreground">
+                Extending computational radiomics beyond intracranial neurology to quantify tumor heterogeneity,
+                spiculation indices, and wash-in/wash-out kinetics across thoracic, abdominal, musculoskeletal, and pelvic organ systems.
               </p>
             </div>
 
@@ -613,14 +622,43 @@ export function LandingPage() {
           </div>
         </section>
 
-        {/* 7. 3-Step Radiomics Methodology */}
+        {/* 8. Interactive Clinical Care & Medication Reminder Suite */}
+        <section className="border-t border-border/80 bg-muted/10 py-20">
+          <div className="mx-auto max-w-7xl px-6 md:px-12">
+            <div className="max-w-3xl mb-10">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3">
+                <HeartPulse size={13} className="text-accent" />
+                <span>THERAPEUTIC CARE CONTINUUM // CIRCADIAN MEDICATION ENGINE</span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black font-serif tracking-tight text-foreground">
+                Automated Clinical Care Protocols & Smart Medication Reminders
+              </h2>
+              <p className="mt-3.5 text-sm md:text-base leading-relaxed text-muted-foreground">
+                Integrated post-diagnostic surveillance and medication adherence suite. Automatically schedules Dexamethasone,
+                Levetiracetam, and endocrine substitution protocols with circadian timers, IEC 60601-1-8 medical audio alarms,
+                adherence progress tracking, and iCalendar synchronization.
+              </p>
+            </div>
+
+            <ClinicalCareScheduler diagnosis="glioma" confidence={0.87} />
+          </div>
+        </section>
+
+        {/* 9. 3-Step Radiomics Methodology */}
         <section className="py-20 border-t border-border/80">
           <div className="mx-auto max-w-7xl px-6 md:px-12">
-            <div className="max-w-2xl mb-12">
-              <div className="eyebrow text-blue-600 dark:text-blue-400 mb-2">Clinical Methodology</div>
-              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
+            <div className="max-w-3xl mb-12">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-mono font-bold uppercase tracking-wider text-primary mb-3">
+                <Sparkles size={13} className="text-accent" />
+                <span>CLINICAL EXECUTION PROTOCOL // TRIAGE IN THREE STAGES</span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-black font-serif tracking-tight text-foreground">
                 How the Radiomics Diagnostic Engine Operates
               </h2>
+              <p className="mt-3.5 text-sm md:text-base leading-relaxed text-muted-foreground">
+                A standardized three-phase clinical progression from raw PACS scan ingestion and calibrated aperture targeting,
+                to deep convolutional feature extraction and IBSI-standardized surgical resectability scoring.
+              </p>
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">

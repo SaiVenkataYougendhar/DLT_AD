@@ -133,8 +133,8 @@ const ScrollAnimatedImageCard: React.FC<{
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-            {isCCW ? "↺ CCW Tilt" : "↻ CW Tilt"}
+          <span className="text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
+            {isCCW ? "↺ Counter-Clockwise (-14°)" : "↻ Clockwise (+15°)"}
           </span>
         </div>
       </div>
@@ -206,23 +206,24 @@ export const ImageRotateScroller: React.FC<{ cards?: ScrollerCardData[]; classNa
     >
       {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-3">
-            <Sparkles size={13} />
-            <span>Skiper17 Scroll-Driven Kinetic Exhibit</span>
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/25 mb-3">
+            <Sparkles size={13} className="text-accent" />
+            <span>KINETIC PROJECTION HORIZON // DYNAMIC TORSION ALIGNMENT</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-            Alternating Direction Image Scroll Animation
+          <h2 className="text-3xl md:text-5xl font-black font-serif text-foreground tracking-tight">
+            Multi-Angle Volumetric Reticle Scanner
           </h2>
-          <p className="mt-3 text-sm md:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
-            Scroll down to watch each anatomical MRI scan physically tilt and rotate in distinct alternating
-            directions (CCW $\leftrightarrow$ CW). Hover over any card for metallic specular sheen and interactive focus.
+          <p className="mt-3.5 text-sm md:text-base text-muted-foreground leading-relaxed">
+            Interactive scroll-driven rotational alignment. Alternating counter-clockwise (CCW ↺) and clockwise (CW ↻)
+            perspective shifting reveals sub-visual lesion contours, dural tails, and 3D infiltrative margins with zero spatial distortion.
+            Hover over any card to level the inspection horizon to 0°.
           </p>
         </div>
 
         {/* Scroll Indicator Badge */}
-        <div className="metallic-pill hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-mono text-slate-700 dark:text-slate-300">
-          <Compass size={14} className="text-blue-500 animate-spin" />
+        <div className="panel metallic-pill hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-mono text-foreground border-border/80">
+          <Compass size={14} className="text-accent animate-spin" />
           <span>Scroll-Driven Directional Physics</span>
         </div>
       </div>
@@ -240,13 +241,13 @@ export const ImageRotateScroller: React.FC<{ cards?: ScrollerCardData[]; classNa
       </div>
 
       {/* Bottom Kinetic Telemetry Strip */}
-      <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40 p-4 text-xs font-mono text-slate-500 dark:text-slate-400">
+      <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-border/80 bg-card/60 p-4 text-xs font-mono text-muted-foreground">
         <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>KINETIC ROTATION: Card 01 & 03 (CCW Negative Pitch) · Card 02 & 04 (CW Positive Pitch)</span>
+          <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
+          <span>KINETIC TORSION: Lesions 01 & 03 (Counter-Clockwise -14° Negative Pitch) · Lesions 02 & 04 (Clockwise +15° Positive Pitch)</span>
         </div>
-        <div className="text-[11px] text-blue-600 dark:text-blue-400 font-bold">
-          HOVER ANY CARD TO LEVEL INSPECTION HORIZON
+        <div className="text-[11px] text-accent font-bold">
+          HOVER ANY CARD TO LEVEL INSPECTION HORIZON TO 0°
         </div>
       </div>
     </div>
