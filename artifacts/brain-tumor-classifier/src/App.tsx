@@ -11,6 +11,7 @@ import {
 } from "./pages/app-pages";
 import { MultiOrganRadiomicsPage } from "./pages/radiomics-page";
 import { ClinicalGuidePage } from "./pages/guide-page";
+import { BackendNeuralNetworkingPage } from "./pages/backend-neural-networking";
 import { SmoothScrollProvider } from "./components/smooth-scroll";
 
 const queryClient = new QueryClient({
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/dashboard" component={DashboardPage} />
           <Route path="/classify" component={ClassifyPage} />
           <Route path="/radiomics" component={MultiOrganRadiomicsPage} />
+          <Route path="/backend-neural-networking" component={BackendNeuralNetworkingPage} />
           <Route path="/guide" component={ClinicalGuidePage} />
           <Route path="/history" component={HistoryPage} />
           <Route path="/analytics" component={AnalyticsPage} />

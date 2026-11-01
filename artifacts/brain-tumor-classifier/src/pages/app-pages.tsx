@@ -1508,6 +1508,15 @@ export function ClassifyPage() {
                     {result.clinical_rationale}
                   </div>
                 )}
+
+                <Link
+                  href="/backend-neural-networking"
+                  className="mt-3.5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-500/30 bg-indigo-500/10 px-4 py-2.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/20 transition shadow-sm"
+                >
+                  <Network size={14} />
+                  <span>Inspect Dual CNN + DNN Neural Routing & Literature Citations</span>
+                  <ArrowRight size={13} />
+                </Link>
               </div>
 
               {/* Class Probability Distribution */}

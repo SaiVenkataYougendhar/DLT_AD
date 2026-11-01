@@ -17,6 +17,7 @@ import {
   X,
   ShieldCheck,
   ExternalLink,
+  Cpu,
 } from 'lucide-react';
 import { useState, type ComponentType, type ReactNode } from 'react';
 import { BrainThemeToggle } from './skiper/theme-toggle';
@@ -26,6 +27,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Activity },
   { href: '/classify', label: 'Studio Classifier', icon: Upload, highlight: true },
   { href: '/radiomics', label: 'Multi-Organ Radiomics', icon: Layers, isNew: true },
+  { href: '/backend-neural-networking', label: 'Neural Network Engine', icon: Cpu, isDev: true },
   { href: '/guide', label: 'Clinical User Guide', icon: BookOpen },
   { href: '/history', label: 'Scan Archive', icon: History },
   { href: '/analytics', label: 'Telemetry & Trends', icon: BarChart3 },
@@ -80,7 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             Workspaces & Modalities
           </div>
           <nav className="space-y-1">
-            {navItems.map(({ href, label, icon: Icon, highlight, isNew }) => {
+            {navItems.map(({ href, label, icon: Icon, highlight, isNew, isDev }: any) => {
               const active = location === href;
               return (
                 <Link
@@ -99,6 +101,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                   {isNew && !active && (
                     <span className="ml-auto rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400">
                       Multi-Organ
+                    </span>
+                  )}
+                  {isDev && !active && (
+                    <span className="ml-auto rounded-full bg-indigo-500/15 px-1.5 py-0.5 text-[9px] font-bold text-indigo-500 border border-indigo-500/30">
+                      Dev Live
                     </span>
                   )}
                   {highlight && !active && !isNew && (
