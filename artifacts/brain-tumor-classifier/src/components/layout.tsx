@@ -26,6 +26,7 @@ import { AnimatedOrganIcon } from './skiper/animated-icons';
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Activity },
   { href: '/classify', label: 'Studio Classifier', icon: Upload, highlight: true },
+  { href: '/omni-ai-studio', label: 'Omni-AI Studio', icon: Sparkles, isOmni: true },
   { href: '/radiomics', label: 'Multi-Organ Radiomics', icon: Layers, isNew: true },
   { href: '/backend-neural-networking', label: 'Neural Network Engine', icon: Cpu, isDev: true },
   { href: '/guide', label: 'Clinical User Guide', icon: BookOpen },
@@ -82,7 +83,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             Workspaces & Modalities
           </div>
           <nav className="space-y-1">
-            {navItems.map(({ href, label, icon: Icon, highlight, isNew, isDev }: any) => {
+            {navItems.map(({ href, label, icon: Icon, highlight, isNew, isDev, isOmni }: any) => {
               const active = location === href;
               return (
                 <Link
@@ -98,6 +99,11 @@ export function AppShell({ children }: { children: ReactNode }) {
                 >
                   <Icon size={16} strokeWidth={active ? 2.2 : 1.8} />
                   <span>{label}</span>
+                  {isOmni && !active && (
+                    <span className="ml-auto rounded-full bg-purple-500/15 px-1.5 py-0.5 text-[9px] font-black text-purple-400 border border-purple-500/30">
+                      5 AI
+                    </span>
+                  )}
                   {isNew && !active && (
                     <span className="ml-auto rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-600 dark:text-emerald-400">
                       Multi-Organ
@@ -199,6 +205,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
 
             <div className="flex items-center gap-3">
+              <Link
+                href="/omni-ai-studio"
+                className="hidden xl:inline-flex items-center gap-2 rounded-lg border border-purple-500/30 bg-purple-500/10 px-3 py-1.5 text-xs font-bold text-purple-400 hover:bg-purple-500/20 transition"
+              >
+                <Sparkles size={13} className="text-purple-400 animate-pulse" />
+                <span>Omni-AI Studio (5 Engines)</span>
+              </Link>
               {/* Brain Synaptic Theme Toggle (Skiper4 + Skiper26) */}
               <BrainThemeToggle />
 

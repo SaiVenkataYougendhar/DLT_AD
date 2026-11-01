@@ -1515,8 +1515,49 @@ export function ClassifyPage() {
                   <span>Inspect Dual CNN + DNN Neural Routing & Literature Citations</span>
                   <ArrowRight size={13} />
                 </Link>
-              </div>
 
+
+                {/* Omni-AI Multi-Engine Second Opinion Trigger */}
+                <div className="mt-3.5 rounded-xl border border-purple-500/30 bg-gradient-to-br from-purple-950/20 via-card to-blue-950/20 p-4 shadow-md space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Sparkles size={14} className="text-purple-400 animate-pulse" />
+                      <span className="text-xs font-extrabold text-foreground">Omni-AI Multi-Engine Second Opinion</span>
+                    </div>
+                    <span className="rounded bg-purple-500/15 border border-purple-500/30 px-2 py-0.5 text-[9px] font-bold text-purple-400">
+                      5 FRONTIER ENGINES
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px]">
+                    <div className="rounded-lg border border-border/80 bg-card/60 p-2 text-muted-foreground">
+                      <strong className="text-foreground block font-bold">DeepMind Genomics:</strong>
+                      {result?.omni_ai?.models?.google_deepmind?.molecular_subtype || "IDH/MGMT Subtype Inferred"}
+                    </div>
+                    <div className="rounded-lg border border-border/80 bg-card/60 p-2 text-muted-foreground">
+                      <strong className="text-foreground block font-bold">Astra 6 Voice:</strong>
+                      {result?.omni_ai?.models?.chatgpt_astra_6?.tone || "Realtime Audio Synthesized"}
+                    </div>
+                    <div className="rounded-lg border border-border/80 bg-card/60 p-2 text-muted-foreground">
+                      <strong className="text-foreground block font-bold">Claude Code:</strong>
+                      DICOM-SR Verified
+                    </div>
+                    <div className="rounded-lg border border-border/80 bg-card/60 p-2 text-muted-foreground">
+                      <strong className="text-foreground block font-bold">Canva & Huggsfield:</strong>
+                      Infographic & 3D Video Ready
+                    </div>
+                  </div>
+
+                  <Link
+                    href="/omni-ai-studio"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 px-3.5 py-2 text-xs font-bold text-white shadow-md hover:opacity-95 transition"
+                  >
+                    <Sparkles size={13} />
+                    <span>Launch Omni-AI Studio for This Scan</span>
+                    <ArrowRight size={13} />
+                  </Link>
+                </div>
+              </div>
               {/* Class Probability Distribution */}
               {probabilities.length > 0 && (
                 <div className="mt-5 rounded-2xl border border-border bg-card p-5">

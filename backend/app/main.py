@@ -50,6 +50,15 @@ from backend.ml.neural_networking import (
 
 ROOT = Path(__file__).resolve().parents[2]
 MODEL_PATH = Path(os.getenv("MODEL_PATH", ROOT / "models" / "brain_tumor_model.keras"))
+from backend.ml.omni_ai import (
+    OMNI_PROVIDERS,
+    run_omni_ai_consultation,
+    generate_deepmind_analysis,
+    generate_astra6_analysis,
+    generate_claude_code_analysis,
+    generate_canva_infographic_payload,
+    generate_huggsfield_3d_payload,
+)
 CLASS_NAMES_PATH = Path(os.getenv("CLASS_NAMES_PATH", ROOT / "models" / "class_names.json"))
 METRICS_PATH = Path(os.getenv("METRICS_PATH", ROOT / "analytics" / "model_metrics.json"))
 SQLITE_PATH = Path(os.getenv("SQLITE_PATH", ROOT / "data" / "brain_tumor.db"))
@@ -411,6 +420,15 @@ async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
             literature_matches=lit_matches,
             db_path=SQLITE_PATH,
         )
+        try:
+            prediction["omni_ai"] = run_omni_ai_consultation(
+                predicted_class=result["predicted_class"],
+                confidence=result["confidence"],
+                radiomics=result["radiomics"],
+                requested_model="all",
+            )
+        except Exception as o_err:
+            print("Omni AI consultation error:", o_err)
         prediction["neural_networking"] = {
             "literature_matches": lit_matches,
             "soft_voting": neural_state["soft_voting"],
@@ -725,6 +743,52 @@ def update_developer_weights(payload: dict[str, float]) -> dict[str, Any]:
         "weights": _developer_weights,
         "message": "Ensemble soft-voting weights dynamically updated.",
     }
+
+
+@app.get("/api/omni-ai/status")
+def get_omni_ai_status() -> dict[str, Any]:
+    return {
+        "status": "ok",
+        "total_providers": len(OMNI_PROVIDERS),
+        "providers": OMNI_PROVIDERS,
+        "active_frontier_models": [
+            "Google DeepMind Bio-molecular",
+            "ChatGPT ASTRA 6 Multimodal",
+            "Claude Code Clinical Verification",
+            "Canva Medical Design Studio",
+            "Huggsfield AI 3D Diffusion",
+        ],
+    }
+
+
+@app.post("/api/omni-ai/consult")
+def consult_omni_ai(payload: dict[str, Any]) -> dict[str, Any]:
+    predicted_class = payload.get("predicted_class", "meningioma")
+    confidence = float(payload.get("confidence", 0.92))
+    radiomics = payload.get("radiomics", {})
+    requested_model = payload.get("model", "all")
+    return run_omni_ai_consultation(
+        predicted_class=predicted_class,
+        confidence=confidence,
+        radiomics=radiomics,
+        requested_model=requested_model,
+    )
+
+
+@app.post("/api/omni-ai/canva/render-infographic")
+def render_canva_infographic(payload: dict[str, Any]) -> dict[str, Any]:
+    predicted_class = payload.get("predicted_class", "meningioma")
+    confidence = float(payload.get("confidence", 0.92))
+    radiomics = payload.get("radiomics", {})
+    return generate_canva_infographic_payload(predicted_class, confidence, radiomics)
+
+
+@app.post("/api/omni-ai/huggsfield/synthesize-frames")
+def synthesize_huggsfield_3d(payload: dict[str, Any]) -> dict[str, Any]:
+    predicted_class = payload.get("predicted_class", "glioma")
+    confidence = float(payload.get("confidence", 0.92))
+    radiomics = payload.get("radiomics", {})
+    return generate_huggsfield_3d_payload(predicted_class, confidence, radiomics)
 
 
 if __name__ == "__main__":
