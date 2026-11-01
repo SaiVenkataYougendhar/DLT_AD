@@ -192,7 +192,7 @@ RadCortex AI is architected as an end-to-end, multi-tiered clinical intelligence
              ▼
    FastAPI Ingestion Endpoint (POST /api/predict)
              │
-             ├── Validates byte signatures (JPEG/PNG/DICOM) & checks 10MB bounds.
+             ├── Validates byte signatures (JPEG/PNG/DICOM/NIfTI/TIFF) & supports uncapped file sizes.
              ├── Executes Otsu thresholding & crops brain parenchyma contour.
              └── Performs 1st–99th percentile adaptive intensity standardization.
              │

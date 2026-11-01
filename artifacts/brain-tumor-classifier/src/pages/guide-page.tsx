@@ -44,7 +44,7 @@ const guideTerms: TermItem[] = [
               <span className="font-bold text-slate-900 dark:text-white text-sm">Ingest Scan</span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Open <strong>Classifier Studio</strong>. Choose one of four pre-loaded reference scans (Meningioma, Glioma, Pituitary, Normal) or upload a local JPG/PNG image up to 10 MB.
+              Open <strong>Classifier Studio</strong>. Choose one of four pre-loaded reference scans (Meningioma, Glioma, Pituitary, Normal) or upload any local DICOM, NIfTI, TIFF, JPG, or PNG scan with uncapped file size.
             </p>
           </div>
 
