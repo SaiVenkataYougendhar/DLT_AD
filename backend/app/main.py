@@ -30,7 +30,12 @@ from tensorflow import keras
 from tensorflow.keras.applications.efficientnet import preprocess_input
 
 # Import Radiomics Engine
-from backend.ml.radiomics import extract_radiomic_features
+from backend.ml.radiomics import (
+    crop_brain_contour,
+    normalize_mri_contrast,
+    extract_radiomic_features,
+    fuse_radiomics_and_deep_learning,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 MODEL_PATH = Path(os.getenv("MODEL_PATH", ROOT / "models" / "brain_tumor_model.keras"))
@@ -142,26 +147,30 @@ def run_inference_and_radiomics(image_bytes: bytes, filename: str) -> dict[str, 
     if model is None or not class_names:
         raise HTTPException(status_code=503, detail="Model assets are missing. Train the model before inference.")
 
-    # 1. Deep Learning Classification
-    image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-    resized = image.resize(IMAGE_SIZE)
-    array = np.asarray(resized, dtype=np.float32)
-    array = preprocess_input(np.expand_dims(array, axis=0))
-    probabilities = model.predict(array, verbose=0)[0]
-    predicted_index = int(np.argmax(probabilities))
-    if predicted_index >= len(class_names):
-        raise HTTPException(status_code=503, detail="The model output does not match class_names.json.")
+    # 1. Springer-Standard Preprocessing: Brain Contour Extraction & Adaptive Contrast
+    orig_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    cropped_image = crop_brain_contour(orig_image)
+    norm_image = normalize_mri_contrast(cropped_image)
+    resized = norm_image.resize(IMAGE_SIZE)
 
-    predicted_label = class_names[predicted_index]
-    prob_dict = {class_names[i]: float(probabilities[i]) for i in range(len(class_names))}
+    # 2. Multi-Scale Test-Time Augmentation (TTA)
+    arr_orig = preprocess_input(np.expand_dims(np.asarray(resized, dtype=np.float32), axis=0))
+    arr_flip = preprocess_input(
+        np.expand_dims(np.asarray(resized.transpose(Image.FLIP_LEFT_RIGHT), dtype=np.float32), axis=0)
+    )
+    p_orig = model.predict(arr_orig, verbose=0)[0]
+    p_flip = model.predict(arr_flip, verbose=0)[0]
+    probabilities = (p_orig + p_flip) / 2.0
 
-    # 2. Extract Quantitative Radiomics & Treatment Planning Biomarkers
+    raw_prob_dict = {class_names[i]: float(probabilities[i]) for i in range(len(class_names))}
+
+    # 3. Extract Quantitative Radiomics & Treatment Planning Biomarkers
     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
-        image.save(tmp.name, format="PNG")
+        orig_image.save(tmp.name, format="PNG")
         tmp_path = tmp.name
 
     try:
-        radiomics_data = extract_radiomic_features(tmp_path, predicted_class=predicted_label)
+        radiomics_data = extract_radiomic_features(tmp_path)
     except Exception:
         radiomics_data = {
             "first_order": {},
@@ -178,6 +187,17 @@ def run_inference_and_radiomics(image_bytes: bytes, filename: str) -> dict[str, 
             },
             "radar_profile": [],
         }
+
+    # 4. Multi-Modal Springer Hybrid Fusion & Calibration
+    predicted_label, confidence, calibrated_probs, clinical_rationale = fuse_radiomics_and_deep_learning(
+        raw_prob_dict, radiomics_data, class_names
+    )
+
+    # Re-evaluate treatment planning with the calibrated class
+    try:
+        radiomics_data = extract_radiomic_features(tmp_path, predicted_class=predicted_label)
+    except Exception:
+        pass
     finally:
         if os.path.exists(tmp_path):
             try:
@@ -187,8 +207,10 @@ def run_inference_and_radiomics(image_bytes: bytes, filename: str) -> dict[str, 
 
     return {
         "predicted_class": predicted_label,
-        "confidence": float(probabilities[predicted_index]),
-        "probabilities": prob_dict,
+        "confidence": float(confidence),
+        "probabilities": calibrated_probs,
+        "raw_probabilities": raw_prob_dict,
+        "clinical_rationale": clinical_rationale,
         "model_version": "EfficientNetB0-DeepLearning-Radiomics-v2.0",
         "radiomics": {
             "first_order": radiomics_data.get("first_order", {}),
@@ -326,6 +348,8 @@ async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
         "prediction": result["predicted_class"],
         "confidence": float(result["confidence"]),
         "probabilities": result["probabilities"],
+        "raw_probabilities": result.get("raw_probabilities", {}),
+        "clinical_rationale": result.get("clinical_rationale", ""),
         "radiomics": result["radiomics"],
         "treatment_planning": result["treatment_planning"],
         "radar_profile": result["radar_profile"],

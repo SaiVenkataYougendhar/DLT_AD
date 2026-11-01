@@ -709,3 +709,4 @@ export const ClinicalCareScheduler: React.FC<ClinicalCareSchedulerProps> = ({
     </div>
   );
 };
+

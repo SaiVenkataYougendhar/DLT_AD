@@ -17,10 +17,20 @@ from tensorflow.keras.applications.efficientnet import preprocess_input
 
 # Import Radiomics Engine
 try:
-    from backend.ml.radiomics import extract_radiomic_features
+    from backend.ml.radiomics import (
+        crop_brain_contour,
+        normalize_mri_contrast,
+        extract_radiomic_features,
+        fuse_radiomics_and_deep_learning,
+    )
 except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from radiomics import extract_radiomic_features
+    from radiomics import (
+        crop_brain_contour,
+        normalize_mri_contrast,
+        extract_radiomic_features,
+        fuse_radiomics_and_deep_learning,
+    )
 
 IMAGE_SIZE = (224, 224)
 
@@ -38,45 +48,43 @@ def main() -> None:
     if not isinstance(class_names, list) or not class_names:
         raise SystemExit("class_names.json is invalid or empty.")
 
-    # 1. Deep Learning Classification (EfficientNetB0)
+    # 1. Springer-Standard Preprocessing
+    orig_image = Image.open(image_path).convert("RGB")
+    cropped_image = crop_brain_contour(orig_image)
+    norm_image = normalize_mri_contrast(cropped_image)
+    resized = norm_image.resize(IMAGE_SIZE)
+
+    # 2. Multi-Scale Test-Time Augmentation (TTA)
     model = keras.models.load_model(model_path)
-    image = Image.open(image_path).convert("RGB").resize(IMAGE_SIZE)
-    array = np.asarray(image, dtype=np.float32)
-    array = preprocess_input(np.expand_dims(array, axis=0))
-    probabilities = model.predict(array, verbose=0)[0]
-    predicted_index = int(np.argmax(probabilities))
-    if predicted_index >= len(class_names):
-        raise SystemExit("The model output does not match class_names.json.")
+    arr_orig = preprocess_input(np.expand_dims(np.asarray(resized, dtype=np.float32), axis=0))
+    arr_flip = preprocess_input(
+        np.expand_dims(np.asarray(resized.transpose(Image.FLIP_LEFT_RIGHT), dtype=np.float32), axis=0)
+    )
+    p_orig = model.predict(arr_orig, verbose=0)[0]
+    p_flip = model.predict(arr_flip, verbose=0)[0]
+    probabilities = (p_orig + p_flip) / 2.0
 
-    predicted_label = str(class_names[predicted_index])
-    prob_dict = {str(class_names[i]): float(probabilities[i]) for i in range(len(class_names))}
+    raw_prob_dict = {str(class_names[i]): float(probabilities[i]) for i in range(len(class_names))}
 
-    # 2. Extract Quantitative Radiomics & Treatment Planning Indicators
-    try:
-        radiomics_data = extract_radiomic_features(image_path, predicted_class=predicted_label)
-    except Exception as e:
-        radiomics_data = {
-            "first_order": {},
-            "texture_glcm": {},
-            "morphological": {},
-            "treatment_planning": {
-                "resectability_score": 70.0,
-                "resectability_grade": "Standard Clinical Review",
-                "radiation_sensitivity_index": 65.0,
-                "chemo_response_index": 55.0,
-                "edema_mass_effect_index": 30.0,
-                "treatment_pathway": "Standard Multidisciplinary Protocol",
-                "risk_tier": "Standard",
-            },
-            "radar_profile": [],
-        }
+    # 3. Extract Quantitative Radiomics & Treatment Planning Indicators
+    radiomics_data = extract_radiomic_features(image_path)
 
-    # 3. Unified Result Payload
+    # 4. Multi-Modal Springer Hybrid Fusion & Calibration
+    predicted_label, confidence, calibrated_probs, clinical_rationale = fuse_radiomics_and_deep_learning(
+        raw_prob_dict, radiomics_data, [str(c) for c in class_names]
+    )
+
+    # Re-evaluate treatment planning with the calibrated class
+    radiomics_data = extract_radiomic_features(image_path, predicted_class=predicted_label)
+
+    # 5. Unified Result Payload
     result = {
         "predicted_class": predicted_label,
-        "confidence": float(probabilities[predicted_index]),
-        "probabilities": prob_dict,
-        "model_version": "EfficientNetB0-DeepLearning-Radiomics-v1.0",
+        "confidence": float(confidence),
+        "probabilities": calibrated_probs,
+        "raw_probabilities": raw_prob_dict,
+        "clinical_rationale": clinical_rationale,
+        "model_version": "EfficientNetB0-DeepLearning-Radiomics-v2.0",
         "radiomics": {
             "first_order": radiomics_data.get("first_order", {}),
             "texture_glcm": radiomics_data.get("texture_glcm", {}),

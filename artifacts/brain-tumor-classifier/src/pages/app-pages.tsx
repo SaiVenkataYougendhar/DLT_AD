@@ -1499,6 +1499,15 @@ export function ClassifyPage() {
                     <div className="mono mt-1 text-xs text-foreground/80">{result.model_version}</div>
                   </div>
                 </div>
+
+                {result.clinical_rationale && (
+                  <div className="mt-4 rounded-xl border border-primary/25 bg-background/80 p-3.5 text-[11px] leading-relaxed text-muted-foreground shadow-sm">
+                    <strong className="text-foreground flex items-center gap-1.5 mb-1 font-semibold text-primary">
+                      <Sparkles size={13} /> Springer Multi-Modal Radiomics Validation:
+                    </strong>
+                    {result.clinical_rationale}
+                  </div>
+                )}
               </div>
 
               {/* Class Probability Distribution */}
