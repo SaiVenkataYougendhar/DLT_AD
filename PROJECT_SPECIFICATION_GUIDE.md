@@ -228,3 +228,4 @@ RadCortex AI is architected as an end-to-end, multi-tiered clinical intelligence
 ```
 
 This end-to-end architecture ensures that every single scan processed through RadCortex AI is mathematically accountable, clinically grounded in consensus peer-reviewed literature, and translated into actionable supportive patient care.
+

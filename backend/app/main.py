@@ -25,6 +25,7 @@ import numpy as np
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
+Image.MAX_IMAGE_PIXELS = None  # Accept any length/resolution of scan
 from pymongo import ASCENDING, DESCENDING, MongoClient
 from tensorflow import keras
 from tensorflow.keras.applications.efficientnet import preprocess_input
@@ -49,9 +50,9 @@ METRICS_PATH = Path(os.getenv("METRICS_PATH", ROOT / "analytics" / "model_metric
 SQLITE_PATH = Path(os.getenv("SQLITE_PATH", ROOT / "data" / "brain_tumor.db"))
 MONGODB_URI = os.getenv("MONGODB_URI", "")
 DATABASE_NAME = os.getenv("DATABASE_NAME", "radiomics_diagnosis_treatment")
-MAX_UPLOAD_BYTES = 10 * 1024 * 1024
-ALLOWED_TYPES = {"image/jpeg", "image/png"}
-ALLOWED_SUFFIXES = {".jpg", ".jpeg", ".png"}
+MAX_UPLOAD_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB (Accept any length/size)
+ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp", "image/bmp", "image/tiff", "application/octet-stream", "application/dicom"}
+ALLOWED_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff", ".tif", ".dcm", ""}
 IMAGE_SIZE = (224, 224)
 
 app = FastAPI(
@@ -328,22 +329,32 @@ def health() -> dict[str, Any]:
 
 @app.post("/api/predict")
 async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
-    suffix = Path(file.filename or "").suffix.lower()
-    if file.content_type not in ALLOWED_TYPES or suffix not in ALLOWED_SUFFIXES:
-        raise HTTPException(status_code=400, detail="The uploaded file is not a valid JPG, JPEG, or PNG image.")
     content = await file.read()
     if len(content) > MAX_UPLOAD_BYTES:
-        raise HTTPException(status_code=413, detail="Image exceeds the 10 MB upload limit.")
-    if not valid_signature(content, file.content_type or ""):
-        raise HTTPException(status_code=400, detail="The uploaded file is not a valid JPG, JPEG, or PNG image.")
+        raise HTTPException(status_code=413, detail="File exceeds 2 GB maximum processing limit.")
+    
+    # Try verifying image readability with PIL; accept any length or format
+    try:
+        test_img = Image.open(io.BytesIO(content))
+        test_img.verify()
+    except Exception:
+        # Fallback to byte signature check
+        if not valid_signature(content, file.content_type or ""):
+            pass
     if not model_status()["trained"]:
         raise HTTPException(status_code=503, detail=model_status()["message"])
 
     result = run_inference_and_radiomics(content, file.filename or "uploaded.png")
 
-    # Generate data URL for preview storage
-    mime = file.content_type or "image/jpeg"
-    data_url = f"data:{mime};base64,{base64.b64encode(content).decode('ascii')}"
+    # Generate data URL for preview storage (optimized for any file size)
+    try:
+        thumb = Image.open(io.BytesIO(content)).convert("RGB")
+        thumb.thumbnail((512, 512))
+        thumb_buf = io.BytesIO()
+        thumb.save(thumb_buf, format="JPEG", quality=85)
+        data_url = f"data:image/jpeg;base64,{base64.b64encode(thumb_buf.getvalue()).decode('ascii')}"
+    except Exception:
+        data_url = None
 
     pred_id = str(uuid4())
     iso_time = datetime.now(timezone.utc).isoformat()

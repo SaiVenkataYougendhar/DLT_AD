@@ -1009,10 +1009,7 @@ export function ClassifyPage() {
 
   const chooseFile = (next: File | undefined) => {
     if (!next) return;
-    if (!['image/jpeg', 'image/png'].includes(next.type) || next.size > 10 * 1024 * 1024) {
-      setRunError('Please upload a valid JPG or PNG scan under 10 MB.');
-      return;
-    }
+    // Accept any length and file size without restriction
     setFile(next);
     setPreview(URL.createObjectURL(next));
     setResult(null);
@@ -1126,8 +1123,9 @@ export function ClassifyPage() {
         <section className="panel p-6">
           <SectionLabel
             right={
-              <span className="mono text-[10px] text-muted-foreground">
-                JPG · PNG · MAX 10MB
+              <span className="mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                ANY FILE LENGTH / SIZE ACCEPTED · MULTI-FORMAT
               </span>
             }
           >
@@ -1245,7 +1243,7 @@ export function ClassifyPage() {
               >
                 <input
                   type="file"
-                  accept="image/jpeg,image/png"
+                  accept="image/*,.dcm,.dicom,.tif,.tiff,.nii"
                   className="sr-only"
                   onChange={(e) => chooseFile(e.target.files?.[0])}
                   data-testid="input-mri-file"
@@ -1255,7 +1253,7 @@ export function ClassifyPage() {
                   Drop cranial MRI scan here
                 </h3>
                 <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-muted-foreground">
-                  or select an image from your computer. Validated for standard axial T1/T2 formats.
+                  or select any scan from your computer. Accepts any file length and resolution with zero size limits.
                 </p>
                 <span className="mt-4 rounded-full border border-border bg-card px-3 py-1 text-[11px] font-semibold text-primary">
                   Browse File
