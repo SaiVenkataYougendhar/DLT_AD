@@ -30,3 +30,4 @@ Write-Host "Classify:  http://localhost:5173/classify" -ForegroundColor White
 Write-Host "Backend:   http://127.0.0.1:8001" -ForegroundColor White
 Write-Host "API Docs:  http://127.0.0.1:8001/docs" -ForegroundColor White
 Write-Host "=====================================================================" -ForegroundColor Cyan
+

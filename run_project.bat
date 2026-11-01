@@ -31,3 +31,4 @@ echo - API Docs:       http://127.0.0.1:8001/docs
 echo =====================================================================
 echo Keep the opened terminal windows running while using the application.
 pause
+
