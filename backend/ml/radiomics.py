@@ -21,6 +21,8 @@ from scipy import ndimage
 def validate_cranial_mri_scan(image_input: Union[Path, str, Image.Image]) -> Tuple[bool, str, Dict[str, Any]]:
     """Quality Control Gate: Verifies whether an uploaded image is genuinely a cranial Brain MRI scan.
     
+    Accepts standard monochromatic grayscale MRI pulse sequences (T1, T2, FLAIR, T1-CE)
+    as well as color-coded perfusion / functional brain MRI maps (CBF, CBV, MTT, ASL, fMRI, DTI).
     Rejects out-of-distribution (OOD) non-medical images, flowcharts, documents,
     system diagrams, natural photos, and non-cranial graphics.
     """
@@ -32,11 +34,11 @@ def validate_cranial_mri_scan(image_input: Union[Path, str, Image.Image]) -> Tup
     rgb = np.array(img.convert("RGB"), dtype=np.float32)
     gray = np.array(img.convert("L"), dtype=np.float32)
     h, w = gray.shape
+    total_pixels = h * w
 
-    # 1. Color saturation check: Cranial MRI scans are monochromatic grayscale (R == G == B)
+    # 1. Color saturation calculation
     color_diff = float(np.mean(np.max(rgb, axis=2) - np.min(rgb, axis=2)))
-    if color_diff > 14.0:
-        return False, "Image is not a related Brain MRI Scan: High color saturation detected. Cranial MRI scans are monochromatic grayscale tomographic acquisitions.", {"color_diff": color_diff}
+    is_colored = color_diff > 14.0
 
     # 2. Border / Background check: In an MRI, the perimeter is dark scanner air (intensity < 65)
     # Flowcharts, documents, and screenshots have white/light backgrounds
@@ -69,27 +71,33 @@ def validate_cranial_mri_scan(image_input: Union[Path, str, Image.Image]) -> Tup
     if num_features == 0:
         return False, "Image is not a related Brain MRI Scan: No anatomical tissue structures detected.", {}
 
-    component_sizes = ndimage.sum(binary_mask, labeled, range(1, num_features + 1))
-    if len(component_sizes) == 0:
-        return False, "Image is not a related Brain MRI Scan: No anatomical tissue structures detected.", {}
+    total_tissue = float(np.sum(binary_mask))
+    tissue_fraction = total_tissue / total_pixels
 
-    largest_size = float(np.max(component_sizes))
-    total_pixels = h * w
-    tissue_fraction = largest_size / total_pixels
-
-    if tissue_fraction < 0.12:
+    if tissue_fraction < 0.08:
         return False, f"Image is not a related Brain MRI Scan: Detected tissue area ({tissue_fraction*100:.1f}%) is too small or fragmented to represent cranial parenchyma.", {"tissue_fraction": tissue_fraction}
 
-    largest_label = int(np.argmax(component_sizes)) + 1
-    rows = np.any(labeled == largest_label, axis=1)
-    cols = np.any(labeled == largest_label, axis=0)
+    # If color-coded, verify dark borders and biological parenchyma (Perfusion / Parametric Brain MRI)
+    if is_colored:
+        modality = "Color-Coded Perfusion / Parametric Brain MRI"
+        return True, f"Valid {modality} (Processed via standardized radiological luminance for feature extraction and deep learning inference)", {
+            "color_diff": color_diff,
+            "is_color_perfusion": True,
+            "modality": modality,
+            "border_mean": border_mean,
+            "tissue_fraction": tissue_fraction
+        }
+
+    # For standard grayscale scans, verify cranial vault aspect ratio
+    rows = np.any(binary_mask, axis=1)
+    cols = np.any(binary_mask, axis=0)
     rmin, rmax = np.where(rows)[0][[0, -1]]
     cmin, cmax = np.where(cols)[0][[0, -1]]
     box_h = rmax - rmin + 1
     box_w = cmax - cmin + 1
     aspect_ratio = float(box_w) / max(1, box_h)
 
-    if aspect_ratio < 0.50 or aspect_ratio > 1.70:
+    if aspect_ratio < 0.40 or aspect_ratio > 2.20:
         return False, f"Image is not a related Brain MRI Scan: Bounding aspect ratio ({aspect_ratio:.2f}) does not match human cranial vault geometry.", {"aspect_ratio": aspect_ratio}
 
     # 5. Continuous Grayscale Soft-Tissue Distribution
@@ -98,14 +106,14 @@ def validate_cranial_mri_scan(image_input: Union[Path, str, Image.Image]) -> Tup
     if mid_tone_fraction < 0.10:
         return False, "Image is not a related Brain MRI Scan: Lacks continuous biological soft-tissue grayscale gradients.", {"mid_tone_fraction": mid_tone_fraction}
 
-    return True, "Valid Cranial MRI Scan", {
+    return True, "Valid Cranial Brain MRI Scan", {
         "color_diff": color_diff,
+        "is_color_perfusion": False,
         "border_mean": border_mean,
         "tissue_fraction": tissue_fraction,
         "aspect_ratio": aspect_ratio,
         "mid_tone_fraction": mid_tone_fraction
     }
-
 
 def crop_brain_contour(image_pil: Image.Image) -> Image.Image:
     """Extract intracranial vault by cropping out black scanner borders and non-brain air margins.
