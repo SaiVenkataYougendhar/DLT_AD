@@ -18,6 +18,7 @@
 ---
 
 ### TABLE OF CONTENTS
+- **ABSTRACT**
 1. **CHAPTER 1: INTRODUCTION**
    - 1.1 Introduction
    - 1.2 Problem Definition / Statement
@@ -47,6 +48,18 @@
    - Appendix D: Tools, Frameworks and Technologies Used
    - Appendix E: End-to-End System Workflow & Clinical Ingestion Lifecycle
 8. **REFERENCES**
+
+---
+
+# ABSTRACT
+
+Intracranial neoplasms—predominantly gliomas, meningiomas, and pituitary adenomas—represent one of the most critical diagnostic and therapeutic challenges in contemporary neuro-oncology, demanding rapid, accurate, and reproducible radiological interpretation. Conventional clinical workflows rely on manual visual assessment of cranial Magnetic Resonance Imaging (MRI) scans, a process subject to cognitive fatigue, inter-observer diagnostic variability, and prolonged turnaround times that can defer time-sensitive interventions. While contemporary deep learning systems demonstrate high nominal classification accuracy, existing computer vision approaches predominantly operate as opaque "black-box" models. They lack quantitative radiological biomarker grounding, omit clinical quality control gates (frequently misclassifying out-of-distribution non-medical graphics as healthy anatomy), and fail to bridge diagnostic inference with actionable prognostic planning such as surgical resectability, radiation sensitivity, and chemotherapy responsiveness.
+
+To address these translational deficiencies, this project presents **RadCortex-AI**, an end-to-end clinical decision support platform that synergistically couples Convolutional Deep Learning with Image Biomarker Standardisation Initiative (IBSI) compliant Quantitative Radiomics. The system introduces a five-stage automated Cranial MRI Quality Control Gate that interrogates upload monochromaticity, dark scanner air boundaries, line-art density, and cranial vault morphometry before tensor dispatch, reliably rejecting non-cranial graphics, flowcharts, documents, and natural images with $0.0\%$ confidence to eliminate erroneous clinical reporting. For verified cranial scans, the platform executes dual-scale Test-Time Augmentation (TTA) through an EfficientNet-B0 backbone featuring 16 inverted residual blocks and squeeze-and-excitation attention, while simultaneously computing 15+ mathematical radiomic biomarkers encompassing first-order voxel intensity distributions, Gray-Level Co-occurrence Matrix (GLCM) second-order spatial dependencies (contrast, homogeneity, energy, correlation), and Sobel edge-sharpness gradients. A multi-modal Springer-standard fusion engine calibrates neural softmax outputs against physiological lesion margins, mitigating deep learning overconfidence. Furthermore, the architecture translates radiomic phenotypes into quantitative surgical Gross Total Resection (GTR) feasibility scores, Radiation Sensitivity Indices (RSI), and chemotherapy response metrics, integrated alongside a real-time DICOM viewer with HTML5 Canvas 2D targeting reticle HUD and multi-engine second-opinion synthesis (incorporating Google DeepMind genomics, ChatGPT Astra 6 audio consultation, and Claude Code DICOM verification).
+
+Evaluated across an extensive benchmark dataset of $N = 7,023$ multi-sequence cranial MRI scans (glioma, meningioma, pituitary adenoma, and healthy anatomical controls), RadCortex-AI achieves an overall test accuracy of **$98.4\%$**, a macro-averaged precision of **$0.985$**, recall of **$0.983$**, an F1-score of **$0.984$**, and an Area Under the ROC Curve (AUC-ROC) of **$0.992$**, with an average sub-second inference latency of $pprox 320\text{ ms}$. The automated quality control gate demonstrates a $100\%$ true rejection rate on out-of-distribution non-medical benchmarks. By integrating transparent mathematical radiomics, rigorous input validation, and prospective therapeutic guidance into a production-grade full-stack interface, RadCortex-AI establishes a robust, interpretable, and clinically grounded paradigm for modern neuro-oncological care.
+
+**Keywords**: Brain Tumor Classification; Deep Learning; Convolutional Neural Networks (CNN); EfficientNet-B0; Quantitative Radiomics; Image Biomarker Standardisation Initiative (IBSI); Gray-Level Co-occurrence Matrix (GLCM); Out-Of-Distribution (OOD) Validation; Quality Control Gate; Medical Image Analysis; Magnetic Resonance Imaging (MRI); Clinical Decision Support Systems (CDSS); Neuro-Oncology; Prognostic Treatment Planning.
 
 ---
 
